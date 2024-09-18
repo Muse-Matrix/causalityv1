@@ -4,7 +4,7 @@ import React, { useContext } from "react";
 
 const Inconnect = () => {
   const museContext = useContext(MuseContext);
-  console.log(museContext);
+  console.log("MUSE INCONNECT:", museContext);
   
   return (
     museContext && museContext.museClient && (

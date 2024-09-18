@@ -5,6 +5,8 @@ import { useContext } from "react";
 
 export const Preconnect = () => {
   const museContext = useContext(MuseContext);
+  console.log("MUSE: ",museContext);
+  
   return (
     <div>
       <p className="text-lg mb-10 text-offWhite font-mono">
