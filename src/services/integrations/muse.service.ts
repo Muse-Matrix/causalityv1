@@ -3,8 +3,8 @@ import { release } from "os";
 import { MuseClient } from "muse-js";
 
 import dayjs from "dayjs";
-// import { downloadDataAsZip, getCSVFile, writeToLocalStorage } from "../storage.service";
-import { createHash } from "crypto";
+// // import { downloadDataAsZip, getCSVFile, writeToLocalStorage } from "../storage.service";
+// import { createHash } from "crypto";
 import { EventData, IExperiment } from "@/utils/constant";
 // import { getFileHash, signData } from "../signer.service";
 
@@ -67,21 +67,21 @@ export interface NeuroFusionParsedEEG {
   [channelName: string]: number;
 }
 
-interface MusePPGReadings {
-  index: number;
-  ppgChannel: number;
-  samples: number[];
-  timestamp: number;
-}
+// interface MusePPGReadings {
+//   index: number;
+//   ppgChannel: number;
+//   samples: number[];
+//   timestamp: number;
+// }
 
-interface accelerometerEntry {
-  x: number;
-  y: number;
-  z: number;
-}
-interface MuseAccelerometerData {
-  samples: accelerometerEntry[];
-}
+// interface accelerometerEntry {
+//   x: number;
+//   y: number;
+//   z: number;
+// }
+// interface MuseAccelerometerData {
+//   samples: accelerometerEntry[];
+// }
 
 export class MuseEEGService {
   museClient: MuseClient;

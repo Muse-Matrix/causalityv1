@@ -42,12 +42,12 @@ export const navItems = [
     };
   }
   
-  interface DeviceInfo {
-    name: string;
-    samplingRate: number;
-    channels: string[];
-    manufacturer?: string;
-  }
+//   interface DeviceInfo {
+//     name: string;
+//     samplingRate: number;
+//     channels: string[];
+//     manufacturer?: string;
+//   }
   
   export interface DatasetExport {
     fileNames: string[];
