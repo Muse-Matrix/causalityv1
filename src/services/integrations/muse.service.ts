@@ -169,6 +169,7 @@ export class MuseEEGService {
 
   async startRecording(experiment: IExperiment) {
     // @ts-ignore
+    //@ts-nocheck
     this.recordingStartTimestamp = dayjs().unix();
     this.recordingStatus = "started";
 
