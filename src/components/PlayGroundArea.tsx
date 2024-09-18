@@ -6,7 +6,7 @@ import Inconnect from "./Inconnect";
 
 const PlayGroundArea: React.FC = () => {
   const museContext = useContext(MuseContext);
-  console.log("MUSE INCONNECT:", museContext, museContext?.museClient, museContext?.museService);
+  console.log("MUSE INCONNECT:", JSON.stringify(museContext), JSON.stringify(museContext?.museClient), JSON.stringify(museContext?.museService));
 
   return (
     <div className="bg-darkBlue min-h-[80vh] flex flex-col items-center justify-center text-center text-white mx-10 mb-10 p-4">
