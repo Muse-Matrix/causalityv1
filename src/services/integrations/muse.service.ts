@@ -126,7 +126,7 @@ export class MuseEEGService {
         // Iterate over each electrode key in the timestamp
         let sampleIndex = 0;
         for (sampleIndex; sampleIndex < this.rawBrainwaveSeries[eegReadings.timestamp][0].length; sampleIndex++) {
-          let brainwaveEntry: any = {};
+          const brainwaveEntry: any = {};
           brainwaveEntry["index"] = sampleIndex;
           brainwaveEntry["unixTimestamp"] = eegReadings.timestamp + sampleIndex * INTER_SAMPLE_INTERVAL;
 
