@@ -2,7 +2,7 @@
 import { MuseContext } from "@/hooks/muse.context";
 import React, { useContext } from "react";
 
-const Inconnect = () => {
+const Inconnect = ({ setPhase }: { setPhase: (phase: string) => void }) => {
   const museContext = useContext(MuseContext);
   console.log("MUSE INCONNECT:", museContext);
   
@@ -55,15 +55,18 @@ const Inconnect = () => {
               className="m-1 self-center"
             >
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M1.33325 7.99992C1.33325 4.31992 4.31992 1.33325 7.99992 1.33325C11.6799 1.33325 14.6666 4.31992 14.6666 7.99992C14.6666 11.6799 11.6799 14.6666 7.99992 14.6666C4.31992 14.6666 1.33325 11.6799 1.33325 7.99992ZM6.99992 8.93127L10.2949 5.66658L10.9999 6.37005L6.99992 10.3333L4.99992 8.35165L5.70492 7.65314L6.99992 8.93127Z"
                 fill="#00F2FF"
               />
             </svg>
           </span>
         </p>
-        <button className="bg-buttonBlue text-white px-6 py-2 font-semibold rounded-md hover:bg-opacity-90">
+        <button 
+        className="bg-buttonBlue text-white px-6 py-2 font-semibold rounded-md hover:bg-opacity-90"
+        onClick={()=>{setPhase('in-recording')}}
+        >
           START AN OPEN ENDED RECORDING
         </button>
         <button className="bg-transparent text-white px-6 py-2 rounded-md border-1 border-white hover:bg-opacity-90">
@@ -72,7 +75,7 @@ const Inconnect = () => {
       </div>
       {/* Disconnect section positioned at the bottom */}
       <div className="flex justify-around mt-auto mb-5">
-        <button className="text-white-500 border-b-1 font-mono ">
+        <button className="text-white-500 border-b-1 font-mono " onClick={()=>{museContext.disconnectMuseClient()}}>
           DISCONNECT
         </button>
       </div>

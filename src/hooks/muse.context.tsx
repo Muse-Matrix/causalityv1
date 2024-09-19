@@ -2,11 +2,14 @@
 import { MuseClient } from "muse-js";
 import { useState, createContext } from "react";
 import { MuseEEGService } from "@/services/integrations/muse.service";
+import { mockedMuseClient } from "@/services/integrations/mock";
 
 export const MuseContext = createContext<null | {
   museClient: MuseClient | null;
   getMuseClient: () => void;
   museService: MuseEEGService | null;
+  disconnectMuseClient: () => void;
+  setMockMuseClient: () => void;
 }>(null);
 
 export const MuseContextProvider = ({ children }: { children: React.ReactNode }) => {
@@ -29,5 +32,17 @@ export const MuseContextProvider = ({ children }: { children: React.ReactNode })
     setMuseClient(museClient);
   };
 
-  return <MuseContext.Provider value={{ museClient, getMuseClient, museService }}>{children}</MuseContext.Provider>;
+  const disconnectMuseClient = async () => {
+    setMuseService(null);
+    setMuseClient(null);
+  }
+
+  const setMockMuseClient = async () => {
+    //@ts-ignore
+    setMuseService(mockedMuseClient?.museClient);
+    //@ts-ignore
+    setMuseClient(mockedMuseClient?.museService);
+  }
+
+  return <MuseContext.Provider value={{ museClient, getMuseClient, museService, disconnectMuseClient, setMockMuseClient }}>{children}</MuseContext.Provider>;
 };

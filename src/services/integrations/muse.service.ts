@@ -1,12 +1,11 @@
 // import "hazardous";
 import { release } from "os";
 import { MuseClient } from "muse-js";
-
 import dayjs from "dayjs";
-// // import { downloadDataAsZip, getCSVFile, writeToLocalStorage } from "../storage.service";
-// import { createHash } from "crypto";
-import { EventData, IExperiment } from "@/utils/constant";
-// import { getFileHash, signData } from "../signer.service";
+import { createHash } from "crypto";
+import { getFileHash, signData } from "../signer.service";
+import { DatasetExport, EventData, IExperiment } from "@/utils/constant";
+import { downloadDataAsZip, getCSVFile, writeToLocalStorage } from "../storage.service";
 
 export const MUSE_SAMPLING_RATE = 256;
 export const MUSE_CHANNELS = ["TP9", "AF7", "AF8", "TP10"];
@@ -67,21 +66,21 @@ export interface NeuroFusionParsedEEG {
   [channelName: string]: number;
 }
 
-// interface MusePPGReadings {
-//   index: number;
-//   ppgChannel: number;
-//   samples: number[];
-//   timestamp: number;
-// }
+interface MusePPGReadings {
+  index: number;
+  ppgChannel: number;
+  samples: number[];
+  timestamp: number;
+}
 
-// interface accelerometerEntry {
-//   x: number;
-//   y: number;
-//   z: number;
-// }
-// interface MuseAccelerometerData {
-//   samples: accelerometerEntry[];
-// }
+interface accelerometerEntry {
+  x: number;
+  y: number;
+  z: number;
+}
+interface MuseAccelerometerData {
+  samples: accelerometerEntry[];
+}
 
 export class MuseEEGService {
   museClient: MuseClient;
@@ -126,7 +125,7 @@ export class MuseEEGService {
         // Iterate over each electrode key in the timestamp
         let sampleIndex = 0;
         for (sampleIndex; sampleIndex < this.rawBrainwaveSeries[eegReadings.timestamp][0].length; sampleIndex++) {
-          const brainwaveEntry: any = {};
+          let brainwaveEntry: any = {};
           brainwaveEntry["index"] = sampleIndex;
           brainwaveEntry["unixTimestamp"] = eegReadings.timestamp + sampleIndex * INTER_SAMPLE_INTERVAL;
 
@@ -169,7 +168,6 @@ export class MuseEEGService {
 
   async startRecording(experiment: IExperiment) {
     // @ts-ignore
-    //@ts-nocheck
     this.recordingStartTimestamp = dayjs().unix();
     this.recordingStatus = "started";
 
@@ -186,60 +184,60 @@ export class MuseEEGService {
     this.museClient.start();
   }
 
-//   async stopRecording(withDownload = false, signDataset = false) {
-//     this.museClient.pause();
-//     // prepare files for download
-//     const datasetExport: DatasetExport = {
-//       fileNames: [`rawBrainwaves_${this.recordingStartTimestamp}.csv`, `events_${this.recordingStartTimestamp}.csv`],
-//       dataSets: [this.rawBrainwavesParsed, this.eventSeries],
-//     };
+  async stopRecording(withDownload = false, signDataset = false) {
+    this.museClient.pause();
+    // prepare files for download
+    const datasetExport: DatasetExport = {
+      fileNames: [`rawBrainwaves_${this.recordingStartTimestamp}.csv`, `events_${this.recordingStartTimestamp}.csv`],
+      dataSets: [this.rawBrainwavesParsed, this.eventSeries],
+    };
 
-//     if (signDataset) {
-//       const brainwavesCSV = await getCSVFile(
-//         `rawBrainwaves_${this.recordingStartTimestamp}.csv`,
-//         this.rawBrainwavesParsed
-//       );
-//       const contentHash = await getFileHash(brainwavesCSV);
+    if (signDataset) {
+      const brainwavesCSV = await getCSVFile(
+        `rawBrainwaves_${this.recordingStartTimestamp}.csv`,
+        this.rawBrainwavesParsed
+      );
+      const contentHash = await getFileHash(brainwavesCSV);
 
-//       try {
-//         const signature = await signData(
-//           `rawBrainwaves_${this.recordingStartTimestamp}.csv`,
-//           this.recordingStartTimestamp,
-//           dayjs().valueOf(),
-//           contentHash,
-//           {
-//             deviceId: this.museClient.deviceName!,
-//           }
-//         );
-//         console.log("attestation, saving dataset", signature);
-//       } catch (e) {
-//         console.log("error signing data", e);
-//       }
-//       const downloadLink = document.createElement("a");
-//       downloadLink.href = URL.createObjectURL(brainwavesCSV);
-//       downloadLink.download = `rawBrainwaves_${this.recordingStartTimestamp}.csv`;
-//       downloadLink.click();
-//     }
+      try {
+        const signature = await signData(
+          `rawBrainwaves_${this.recordingStartTimestamp}.csv`,
+          this.recordingStartTimestamp,
+          dayjs().valueOf(),
+          contentHash,
+          {
+            deviceId: this.museClient.deviceName!,
+          }
+        );
+        console.log("attestation, saving dataset", signature);
+      } catch (e) {
+        console.log("error signing data", e);
+      }
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(brainwavesCSV);
+      downloadLink.download = `rawBrainwaves_${this.recordingStartTimestamp}.csv`;
+      downloadLink.click();
+    }
 
-//     try {
-//       if (withDownload) {
-//         await downloadDataAsZip(datasetExport, `fusionDataExport`, dayjs.unix(this.recordingStartTimestamp));
-//       } else {
-//         await writeToLocalStorage(datasetExport, dayjs.unix(this.recordingStartTimestamp));
-//       }
-//     } catch (e) {
-//       console.log(e);
-//     } finally {
-//       // empty series
-//       this.ppgSeries = [];
-//       this.rawBrainwaveSeries = {};
-//       this.rawBrainwavesParsed = [];
-//       this.eventSeries = [];
-//       this.accelerometerSeries = [];
-//       this.recordingStartTimestamp = 0;
-//       this.recordingStatus = "stopped";
-//     }
+    try {
+      if (withDownload) {
+        await downloadDataAsZip(datasetExport, `fusionDataExport`, dayjs.unix(this.recordingStartTimestamp));
+      } else {
+        await writeToLocalStorage(datasetExport, dayjs.unix(this.recordingStartTimestamp));
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      // empty series
+      this.ppgSeries = [];
+      this.rawBrainwaveSeries = {};
+      this.rawBrainwavesParsed = [];
+      this.eventSeries = [];
+      this.accelerometerSeries = [];
+      this.recordingStartTimestamp = 0;
+      this.recordingStatus = "stopped";
+    }
 
-//     return datasetExport;
-//   }
+    return datasetExport;
+  }
 }
