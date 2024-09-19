@@ -1,29 +1,50 @@
 "use client"
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const OpreationalButton = () => {
-  // Set "Record" as the default selected operation
-  const [selectedOperation, setSelectedOperation] = useState('Record');
+interface OpreationalButtonProps {
+  selectedOperation: string;
+  setSelectedOperation: (operation: string) => void;
+}
+
+const OpreationalButton: React.FC<OpreationalButtonProps> = ({
+  selectedOperation,
+  setSelectedOperation,
+}) => {
+  const router = useRouter();
+
+  const handleClick = (operation: string) => {
+    setSelectedOperation(operation);
+    if (operation === "Record") {
+      router.push("/playground/record");
+    } else if (operation === "Analyze") {
+      router.push("/playground/experiments");
+    }
+  };
 
   return (
     <div className="flex justify-between mt-6 mb-4">
       <div className="flex justify-left space-x-4 text-white lg:ml-12 ml-6">
-        <button 
+        <button
           className={`${
-            selectedOperation === 'Record' ? 'font-semibold bg-white/25 text-highLight' : 'text-gray-300'
+            selectedOperation === 'Record'
+              ? 'font-semibold bg-white/25 text-highLight'
+              : 'text-gray-300'
           } border border-transparent rounded-md hover:font-semibold hover:bg-white/25 transition duration-300 px-4`}
-          onClick={() => setSelectedOperation('Record')}
+          onClick={() => handleClick("Record")}
         >
           Record
         </button>
         <div className="bg-white w-px self-center h-4"></div>
-        <button 
+        <button
           className={`${
-            selectedOperation === 'Analyze' ? 'font-semibold bg-white/25 text-highLight' : 'text-gray-300'
+            selectedOperation === 'Experiments'
+              ? 'font-semibold bg-white/25 text-highLight'
+              : 'text-gray-300'
           } border border-transparent rounded-md hover:font-semibold hover:bg-white/25 transition duration-300 px-4`}
-          onClick={() => setSelectedOperation('Analyze')}
+          onClick={() => handleClick("Experiments")}
         >
-          Analyze
+          Experiments
         </button>
       </div>
       <div className="flex justify-right space-x-4 text-white lg:mr-12 mr-6">

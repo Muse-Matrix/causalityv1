@@ -2,10 +2,10 @@ import { useEffect, useRef } from "react";
 import ReactEcharts from "echarts-for-react";
 import * as echarts from "echarts";
 
-import { NeuroFusionParsedEEG } from "@/services/integrations/muse.service";
+import { CasualityNetworkParsedEEG } from "@/services/integrations/muse.service";
 import EChartsReact from "echarts-for-react";
 interface SignalViewerProps {
-  rawBrainwaves: NeuroFusionParsedEEG[];
+  rawBrainwaves: CasualityNetworkParsedEEG[];
   channelNames: string[];
 }
 

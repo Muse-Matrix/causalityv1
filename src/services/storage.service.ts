@@ -90,7 +90,7 @@ export async function getCSVFile(fileName: string, dataSet: any[]): Promise<File
  */
 let dbPromise: Promise<IDBPDatabase<unknown>>;
 if (typeof window !== "undefined") {
-  dbPromise = openDB("neurofusion-db", 1, {
+  dbPromise = openDB("casuality-network-db", 1, {
     upgrade(db) {
       db.createObjectStore("files", { keyPath: "name" });
     },

@@ -60,7 +60,7 @@ interface MuseEEGReadings {
   timestamp: number;
 }
 
-export interface NeuroFusionParsedEEG {
+export interface CasualityNetworkParsedEEG {
   index: number;
   unixTimestamp: number;
   [channelName: string]: number;
@@ -91,7 +91,7 @@ export class MuseEEGService {
   ppgSeries: any = [];
   accelerometerSeries: any = [];
   rawBrainwaveSeries: any = {};
-  rawBrainwavesParsed: NeuroFusionParsedEEG[] = [];
+  rawBrainwavesParsed: CasualityNetworkParsedEEG[] = [];
 
   eventSeries: EventData[] = [];
 

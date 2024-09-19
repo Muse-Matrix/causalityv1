@@ -5,7 +5,7 @@ import { IExperiment } from "@/utils/constant";
 import dayjs from "dayjs";
 import { MuseContext } from "@/hooks/muse.context";
 import { SignalViewer } from "./SignalViewer"; // import { useSession } from "next-auth/react";
-import { MuseEEGService, NeuroFusionParsedEEG } from "@/services/integrations/muse.service";
+import { MuseEEGService, CasualityNetworkParsedEEG } from "@/services/integrations/muse.service";
 
 export const WaveInsight: FC<IExperiment> = (experiment) => {
 
@@ -100,7 +100,7 @@ export const WaveInsight: FC<IExperiment> = (experiment) => {
   }
 
   const [museBrainwaves, setMuseBrainwaves] =
-    useState<NeuroFusionParsedEEG[]>();
+    useState<CasualityNetworkParsedEEG[]>();
   const [isMuseRecording, setIsMuseRecording] = useState(false);
   useEffect(() => {
     // Subscribe to updates

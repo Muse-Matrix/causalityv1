@@ -1,12 +1,13 @@
 "use client";
 
-import { useContext, useState } from "react";
-import { Preconnect } from "./Preconnect";
+import Inconnect from "@/components/Inconnect";
+import { Preconnect } from "@/components/Preconnect";
+import Recorder from "@/components/Recorder";
+import { WaveInsight } from "@/components/WaveInsight";
 import { MuseContext } from "@/hooks/muse.context";
-import Inconnect from "./Inconnect";
-import { WaveInsight } from "./WaveInsight";
+import { useContext, useState } from "react";
 
-const PlayGroundArea: React.FC = () => {
+const RecordArea: React.FC = () => {
   const museContext = useContext(MuseContext);
   const [phase, setPhase] = useState("pre-recording");
 
@@ -26,10 +27,11 @@ const PlayGroundArea: React.FC = () => {
           <Inconnect setPhase={setPhase} />
         )
       ) : (
-        <WaveInsight id={3} name="Akhil" description="new experiments" />
+        // <WaveInsight id={3} name="Akhil" description="new experiments" />
+        <Recorder/>
       )}
     </div>
   );
 };
 
-export default PlayGroundArea;
+export default RecordArea;

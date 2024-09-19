@@ -21,8 +21,8 @@ const Navbar: React.FC = () => {
 
   // Navigate to Playground only on initial load if on the root path ("/")
   useEffect(() => {
-    if (pathname === "/") {
-      router.push("/playground"); 
+    if (pathname === "/" || pathname === "/playground") {
+      router.push("/playground/record"); 
     }
   }, [pathname, router]);
 
