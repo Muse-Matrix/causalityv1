@@ -221,7 +221,7 @@ export class MuseEEGService {
 
     try {
       if (withDownload) {
-        await downloadDataAsZip(datasetExport, `fusionDataExport`, dayjs.unix(this.recordingStartTimestamp));
+        await downloadDataAsZip(datasetExport, `casualityData`, dayjs.unix(this.recordingStartTimestamp));
       } else {
         await writeToLocalStorage(datasetExport, dayjs.unix(this.recordingStartTimestamp));
       }
