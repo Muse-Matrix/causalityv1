@@ -219,7 +219,7 @@ const Recorder = () => {
             <button
               className="bg-white text-buttonBlue px-6 py-2 font-semibold rounded-md hover:bg-opacity-90"
               onClick={() => {
-                stopMuseRecording;
+                stopMuseRecording();
               }}
             >
               STOP RECORDING
