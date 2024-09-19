@@ -1,9 +1,7 @@
 "use client";
 
-import Inconnect from "@/components/Inconnect";
 import { Preconnect } from "@/components/Preconnect";
 import Recorder from "@/components/Recorder";
-import { WaveInsight } from "@/components/WaveInsight";
 import { MuseContext } from "@/hooks/muse.context";
 import { useContext, useState } from "react";
 
@@ -20,15 +18,11 @@ const RecordArea: React.FC = () => {
 
   return (
     <div className="bg-darkBlue min-h-[80vh] flex flex-col items-center justify-center text-center text-white mx-10 mb-10 p-4">
-      {phase === "pre-recording" ? (
-        !museContext?.museClient ? (
-          <Preconnect />
-        ) : (
-          <Inconnect setPhase={setPhase} />
-        )
+      {!museContext?.museClient ? (
+        <Preconnect />
       ) : (
         // <WaveInsight id={3} name="Akhil" description="new experiments" />
-        <Recorder/>
+        <Recorder />
       )}
     </div>
   );

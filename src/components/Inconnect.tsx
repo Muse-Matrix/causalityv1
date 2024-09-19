@@ -4,6 +4,8 @@ import React, { useContext } from "react";
 
 const Inconnect = ({ setPhase }: { setPhase: (phase: string) => void }) => {
   const museContext = useContext(MuseContext);
+
+  
   
   return (
     museContext && museContext.museClient && (
