@@ -34,7 +34,7 @@ export const signData = async (
   startTimestamp: number,
   endTimestamp: number,
   contentHash: string,
-  additionalMeta: {}
+  additionalMeta: object
 ) => {
   let signer = null;
   let provider;

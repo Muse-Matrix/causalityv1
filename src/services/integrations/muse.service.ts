@@ -2,7 +2,7 @@
 import { release } from "os";
 import { MuseClient } from "muse-js";
 import dayjs from "dayjs";
-import { createHash } from "crypto";
+// import { createHash } from "crypto";
 import { getFileHash, signData } from "../signer.service";
 import { DatasetExport, EventData, IExperiment } from "@/utils/constant";
 import { downloadDataAsZip, getCSVFile, writeToLocalStorage } from "../storage.service";
@@ -66,21 +66,21 @@ export interface NeuroFusionParsedEEG {
   [channelName: string]: number;
 }
 
-interface MusePPGReadings {
-  index: number;
-  ppgChannel: number;
-  samples: number[];
-  timestamp: number;
-}
+// interface MusePPGReadings {
+//   index: number;
+//   ppgChannel: number;
+//   samples: number[];
+//   timestamp: number;
+// }
 
 interface accelerometerEntry {
   x: number;
   y: number;
   z: number;
 }
-interface MuseAccelerometerData {
-  samples: accelerometerEntry[];
-}
+// interface MuseAccelerometerData {
+//   samples: accelerometerEntry[];
+// }
 
 export class MuseEEGService {
   museClient: MuseClient;
@@ -125,7 +125,7 @@ export class MuseEEGService {
         // Iterate over each electrode key in the timestamp
         let sampleIndex = 0;
         for (sampleIndex; sampleIndex < this.rawBrainwaveSeries[eegReadings.timestamp][0].length; sampleIndex++) {
-          let brainwaveEntry: any = {};
+          const brainwaveEntry: any = {};
           brainwaveEntry["index"] = sampleIndex;
           brainwaveEntry["unixTimestamp"] = eegReadings.timestamp + sampleIndex * INTER_SAMPLE_INTERVAL;
 

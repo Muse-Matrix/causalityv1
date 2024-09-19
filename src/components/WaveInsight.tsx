@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/self-closing-comp */
 import { FC, useState, useEffect, useContext } from "react";
-import { waveInsights } from "@/utils/waveInsights";
 import { IExperiment } from "@/utils/constant";
 import dayjs from "dayjs";
 import { MuseContext } from "@/hooks/muse.context";
@@ -9,7 +8,6 @@ import { SignalViewer } from "./SignalViewer"; // import { useSession } from "ne
 import { MuseEEGService, NeuroFusionParsedEEG } from "@/services/integrations/muse.service";
 
 export const WaveInsight: FC<IExperiment> = (experiment) => {
-  const [showSignalQuality, setShowSignalQuality] = useState(true);
 
   const [sandboxData, setSandboxData] = useState("");
 
@@ -27,6 +25,7 @@ export const WaveInsight: FC<IExperiment> = (experiment) => {
   }, [experiment, tags, duration]);
 
   const [museEEGService, setMuseEEGService] = useState<MuseEEGService>();
+  //@typescript-eslint/no-non-null-asserted-optional-chain
   useEffect(() => {
     if (museContext?.museClient && museContext?.museService) {
       setMuseEEGService(museContext?.museService!);
@@ -36,14 +35,6 @@ export const WaveInsight: FC<IExperiment> = (experiment) => {
   async function startMuseRecording() {
     if (museEEGService) {
       setIsMuseRecording(true);
-      waveInsights.trackEvent({
-        name: "start_muse_recording",
-        properties: {
-          deviceInfo: await museContext?.museClient?.deviceInfo(),
-          experimentInfo: experimentInfo,
-          userNpub: "Akhil",
-        },
-      });
       await museEEGService.startRecording(experimentInfo);
     }
   }
@@ -51,14 +42,6 @@ export const WaveInsight: FC<IExperiment> = (experiment) => {
   async function stopMuseRecording() {
     if (museEEGService) {
       setIsMuseRecording(false);
-      waveInsights.trackEvent({
-        name: "stop_muse_recording",
-        properties: {
-          deviceInfo: await museContext?.museClient?.deviceInfo(),
-          experimentInfo: experimentInfo,
-          userNpub: "Akhil"
-        },
-      });
       await museEEGService.stopRecording(true);
     }
   }

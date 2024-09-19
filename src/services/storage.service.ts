@@ -28,7 +28,7 @@ export async function writeDataToStore(dataName: string, data: any, fileTimestam
   // TODO: fix validation
   console.log("fileTimestamp: ", fileTimestamp);
 
-  const providerName = dataName === "event" ? "fusion" : "neurosity";
+  // const providerName = dataName === "event" ? "fusion" : "neurosity";
 
   if (storeType === "download") {
     const fileName = `${dataName}_${fileTimestamp}.csv`;
@@ -63,7 +63,7 @@ export async function writeDataToStore(dataName: string, data: any, fileTimestam
 export async function downloadDataAsZip(datasetExport: DatasetExport, zipFileName: string, unixTimestamp: dayjs.Dayjs) {
   const filePath = `${zipFileName}_${unixTimestamp.unix()}.zip`;
 
-  let zip = new JSZip();
+  const zip = new JSZip();
   for (let i = 0; i < datasetExport.dataSets.length; i++) {
     const dataSet = datasetExport.dataSets[i];
     const content = convertToCSV(dataSet); // convert to csv format

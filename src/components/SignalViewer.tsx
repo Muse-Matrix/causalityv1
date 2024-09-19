@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import ReactEcharts from "echarts-for-react";
 import * as echarts from "echarts";
 
 import { NeuroFusionParsedEEG } from "@/services/integrations/muse.service";
+import EChartsReact from "echarts-for-react";
 interface SignalViewerProps {
   rawBrainwaves: NeuroFusionParsedEEG[];
   channelNames: string[];
@@ -12,7 +13,6 @@ export const SignalViewer: React.FC<SignalViewerProps> = ({ rawBrainwaves, chann
   const echartsRefs = useRef<any>([]);
 
   useEffect(() => {
-    console.log("re-render");
     const syncZoom = (param: { chartId: string; batch: { start: any; end: any }[] }) => {
       if (!param.batch || param.batch.length === 0) return;
 
@@ -84,7 +84,9 @@ export const SignalViewer: React.FC<SignalViewerProps> = ({ rawBrainwaves, chann
       {channelNames.map((channelName, index) => (
         <ReactEcharts
           key={channelName}
-          // ref={(e) => (echartsRefs.current[index] = e)}
+          ref={(e: EChartsReact | null) => {
+            echartsRefs.current[index] = e; 
+          }}
           option={getOption(channelName)}
           style={{ height: "200px", width: "1200px" }}
           opts={{ renderer: "canvas" }}
