@@ -6,13 +6,16 @@ import dayjs from "dayjs";
 import { MuseContext } from "@/hooks/muse.context";
 import { SignalViewer } from "./SignalViewer"; // import { useSession } from "next-auth/react";
 import {
-  CasualityNetworkParsedEEG,
+  CausalityNetworkParsedEEG,
   MuseEEGService,
 } from "@/services/integrations/muse.service";
+import { useRouter } from "next/navigation";
 const Recorder = () => {
   const [sandboxData, setSandboxData] = useState("");
   const museContext = useContext(MuseContext);
   const [museEEGService, setMuseEEGService] = useState<MuseEEGService>();
+  const [isMuseDataRecorded, setIsMuseDataRecorded] = useState(false);
+  const router = useRouter()
   //@typescript-eslint/no-non-null-asserted-optional-chain
   useEffect(() => {
     if (museContext?.museClient && museContext?.museService) {
@@ -23,16 +26,40 @@ const Recorder = () => {
   async function startMuseRecording() {
     if (museEEGService) {
       setIsMuseRecording(true);
-      await museEEGService.startRecording({ id: 3, name:"Akhil", description:"new experiments"});
+      await museEEGService.startRecording({
+        id: 3,
+        name: "Akhil",
+        description: "new experiments",
+      });
     }
   }
 
   async function stopMuseRecording() {
     if (museEEGService) {
       setIsMuseRecording(false);
+      setIsMuseDataRecorded(true);
       await museEEGService.stopRecording(true);
     }
   }
+
+  async function saveAndDowloadRecordedData() {
+    if(museEEGService){
+      setIsMuseDataRecorded(false);
+      setIsMuseRecording(false);
+      router.push('/playground/experiments')
+      await museEEGService.dowloadOrSaveRecordedData(true);
+    }
+  }
+
+  async function discardMuseRecording() {
+    if (museEEGService) {
+      setIsMuseRecording(false);
+      setIsMuseDataRecorded(false);
+      await museEEGService.stopRecording(true);
+    }
+  }
+
+
 
   if (typeof window !== "undefined") {
     window.addEventListener("message", (event) => {
@@ -86,31 +113,33 @@ const Recorder = () => {
   }
 
   const [museBrainwaves, setMuseBrainwaves] =
-    useState<CasualityNetworkParsedEEG[]>();
+    useState<CausalityNetworkParsedEEG[]>();
   const [isMuseRecording, setIsMuseRecording] = useState(false);
   useEffect(() => {
     // Subscribe to updates
     if (!isMuseRecording) return;
     if (!museContext?.museService) return;
-    const unsubscribe = museContext?.museService?.onUpdate((data) => {
-      // Handle the new data
-      const last1000Brainwaves = data.slice(-1000);
-      setMuseBrainwaves(last1000Brainwaves);
-    });
+    if (museContext?.museService?.onUpdate) {
+      const unsubscribe = museContext?.museService?.onUpdate((data) => {
+        // Handle the new data
+        const last1000Brainwaves = data.slice(-1000);
+        setMuseBrainwaves(last1000Brainwaves);
+      });
 
-    // Unsubscribe on component unmount or when dependencies change
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
+      // Unsubscribe on component unmount or when dependencies change
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
   }, [isMuseRecording, museContext?.museService]);
 
   return (
     museContext &&
     museContext.museClient && (
       <>
-        {!isMuseRecording ? (
+        {!isMuseRecording && !isMuseDataRecorded ? (
           <div className="flex flex-col items-center space-y-4 mt-20">
             <svg
               width="102"
@@ -173,8 +202,12 @@ const Recorder = () => {
             >
               START AN OPEN ENDED RECORDING
             </button>
-            <button className="bg-transparent text-white px-6 py-2 rounded-md border-1 border-white hover:bg-opacity-90">
-              CHOOSE RECORDING
+            <button className="bg-transparent text-white px-6 py-2 rounded-md border-1 border-white hover:bg-opacity-90"
+            onClick={() => {
+              router.push('/playground/experiments');
+            }}
+            >
+              CHOOSE EXPERIMENT
             </button>
           </div>
         ) : (
@@ -184,25 +217,44 @@ const Recorder = () => {
           >
             <p className="text-lg text-offWhite font-mono mt-4">
               Muse Device ID: {museContext.museClient.deviceName} |{" "}
-              <span className="text-blue-500 inline-flex">
-                Recording in progress{" "}
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="m-1 self-center"
-                >
-                  <path
-                    d="M7.99992 1.33325C4.31992 1.33325 1.33325 4.31992 1.33325 7.99992C1.33325 11.6799 4.31992 14.6666 7.99992 14.6666C11.6799 14.6666 14.6666 11.6799 14.6666 7.99992C14.6666 4.31992 11.6799 1.33325 7.99992 1.33325Z"
-                    fill="#FF0000"
-                  />
-                </svg>
-              </span>
+              {!isMuseDataRecorded ? (
+                <span className="text-white inline-flex">
+                  Recording in progress{" "}
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="m-1 self-center"
+                  >
+                    <path
+                      d="M7.99992 1.33325C4.31992 1.33325 1.33325 4.31992 1.33325 7.99992C1.33325 11.6799 4.31992 14.6666 7.99992 14.6666C11.6799 14.6666 14.6666 11.6799 14.6666 7.99992C14.6666 4.31992 11.6799 1.33325 7.99992 1.33325Z"
+                      fill="#FF0000"
+                    />
+                  </svg>
+                </span>
+              ) : (
+                <span className="text-white inline-flex">
+                  Recording complete{" "}
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="m-1 self-center"
+                  >
+                    <path
+                      d="M7.99992 1.33325C4.31992 1.33325 1.33325 4.31992 1.33325 7.99992C1.33325 11.6799 4.31992 14.6666 7.99992 14.6666C11.6799 14.6666 14.6666 11.6799 14.6666 7.99992C14.6666 4.31992 11.6799 1.33325 7.99992 1.33325Z"
+                      fill="white"
+                    />
+                  </svg>
+                </span>
+              )}
             </p>
             <div
-              className="bg-black h-[400px] mx-[30px] snap-y rounded-sm block overflow-y-auto"
+              className="bg-black h-[400px] mx-[30px] snap-y rounded-sm block overflow-y-auto p-4"
               style={{ width: "-webkit-fill-available" }}
             >
               <div>
@@ -216,14 +268,34 @@ const Recorder = () => {
                 )}
               </div>
             </div>
-            <button
-              className="bg-white text-buttonBlue px-6 py-2 font-semibold rounded-md hover:bg-opacity-90"
-              onClick={() => {
-                stopMuseRecording();
-              }}
-            >
-              STOP RECORDING
-            </button>
+            {!isMuseDataRecorded ? (
+              <button
+                className="bg-white text-buttonBlue px-6 py-2 font-semibold rounded-md hover:bg-opacity-90"
+                onClick={() => {
+                  stopMuseRecording();
+                }}
+              >
+                STOP RECORDING
+              </button>
+            ) : (
+              <div>
+                <button
+                  className="bg-buttonBlue text-white px-6 py-2 font-semibold rounded-md hover:bg-opacity-90 mx-2"
+                  onClick={() => {
+                    saveAndDowloadRecordedData();
+                  }}
+                >
+                  SAVE RECORDING
+                </button>
+                <button className="bg-transparent text-white px-6 py-2 rounded-md border-1 border-white hover:bg-opacity-90 m-2"
+                onClick={()=>{
+                  discardMuseRecording()
+                }}
+                >
+                  DISCARD
+                </button>
+              </div>
+            )}
           </div>
         )}
         {/* Disconnect section positioned at the bottom */}

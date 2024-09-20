@@ -60,7 +60,7 @@ interface MuseEEGReadings {
   timestamp: number;
 }
 
-export interface CasualityNetworkParsedEEG {
+export interface CausalityNetworkParsedEEG {
   index: number;
   unixTimestamp: number;
   [channelName: string]: number;
@@ -91,7 +91,7 @@ export class MuseEEGService {
   ppgSeries: any = [];
   accelerometerSeries: any = [];
   rawBrainwaveSeries: any = {};
-  rawBrainwavesParsed: CasualityNetworkParsedEEG[] = [];
+  rawBrainwavesParsed: CausalityNetworkParsedEEG[] = [];
 
   eventSeries: EventData[] = [];
 
@@ -192,6 +192,18 @@ export class MuseEEGService {
       dataSets: [this.rawBrainwavesParsed, this.eventSeries],
     };
 
+    return datasetExport;
+  }
+
+  async dowloadOrSaveRecordedData(withDownload = false, signDataset = false){
+    // prepare files for download
+    console.log("DOWNLOAD: ",withDownload);
+    
+    const datasetExport: DatasetExport = {
+      fileNames: [`rawBrainwaves_${this.recordingStartTimestamp}.csv`, `events_${this.recordingStartTimestamp}.csv`],
+      dataSets: [this.rawBrainwavesParsed, this.eventSeries],
+    };
+
     if (signDataset) {
       const brainwavesCSV = await getCSVFile(
         `rawBrainwaves_${this.recordingStartTimestamp}.csv`,
@@ -221,7 +233,7 @@ export class MuseEEGService {
 
     try {
       if (withDownload) {
-        await downloadDataAsZip(datasetExport, `casualityData`, dayjs.unix(this.recordingStartTimestamp));
+        await downloadDataAsZip(datasetExport, `causality_data`, dayjs.unix(this.recordingStartTimestamp));
       } else {
         await writeToLocalStorage(datasetExport, dayjs.unix(this.recordingStartTimestamp));
       }

@@ -21,7 +21,6 @@ const RecordArea: React.FC = () => {
       {!museContext?.museClient ? (
         <Preconnect />
       ) : (
-        // <WaveInsight id={3} name="Akhil" description="new experiments" />
         <Recorder />
       )}
     </div>

@@ -4,19 +4,21 @@ import { MuseContextProvider } from "@/hooks/muse.context";
 import RecordArea from "./record/page";
 import { useEffect, useState } from "react";
 import Experiments from "./experiments/page";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const PlayGroundLayout = ({ children }: { children: React.ReactNode }) => {
   const [selectedOperation, setSelectedOperation] = useState("Record");
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (selectedOperation === "Record") {
-      router.push("/playground/record");
-    } else {
-      router.push("/playground/experiments");
+    if(pathname === "/playground/experiments"){
+      setSelectedOperation("Experiments")
     }
-  }, [selectedOperation, router]);
+    if(pathname === "/playground/record"){
+      setSelectedOperation("Record")
+    }
+  }, [selectedOperation, router, pathname]);
 
   return (
     <div>

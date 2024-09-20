@@ -1,6 +1,5 @@
 "use client"
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 interface OpreationalButtonProps {
   selectedOperation: string;
@@ -17,7 +16,7 @@ const OpreationalButton: React.FC<OpreationalButtonProps> = ({
     setSelectedOperation(operation);
     if (operation === "Record") {
       router.push("/playground/record");
-    } else if (operation === "Analyze") {
+    } else if (operation === "Experiments") {
       router.push("/playground/experiments");
     }
   };
