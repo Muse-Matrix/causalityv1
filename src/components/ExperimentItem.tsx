@@ -7,9 +7,10 @@ import { Experiment } from '@/hooks/experiment.context';
 
 interface Props {
   experiment: Experiment
+  onClick: () => void;
 }
 
-const ExperimentItem: React.FC<Props> = ({ experiment }) => {
+const ExperimentItem: React.FC<Props> = ({ experiment, onClick }) => {
   const handleRecord = () => {
     console.log(`Recording data for ${experiment.experimentName}`);
   };
@@ -23,7 +24,9 @@ const ExperimentItem: React.FC<Props> = ({ experiment }) => {
   };
 
   return (
-    <div className="flex justify-between items-center border-b border-gray-600 py-4">
+    <div className="flex justify-between items-center border-b border-gray-600 py-4"
+      onClick={onClick}
+    >
       <span className="text-white">{experiment.experimentName}</span>
       <div className="flex space-x-4">
         {!experiment.isRecorded ? (

@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 
 // Define the structure of an experiment
 export interface Experiment {
+  id: number;
   experimentName: string;
   images: File[];
   duration: number;

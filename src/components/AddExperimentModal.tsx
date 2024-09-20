@@ -6,7 +6,7 @@ export default function ExperimentModal({
 }: {
   toggleModal: () => void;
 }) {
-  const { addExperiment } = useExperimentContext();
+  const { addExperiment, experiments } = useExperimentContext();
   const [experimentName, setExperimentName] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [duration, setDuration] = useState(10); // Default 10s
@@ -30,7 +30,7 @@ export default function ExperimentModal({
     };
 console.log(newExperiment);
 
-    addExperiment(newExperiment); 
+    addExperiment({id: experiments.length+1, ...newExperiment}); 
     setExperimentName(''); 
     setImages([]);
     setDuration(10);
