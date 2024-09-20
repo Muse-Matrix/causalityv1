@@ -9,38 +9,36 @@ const ExperimentList: React.FC = () => {
     null
   );
 
-  const handleSelectExperiment = (id: number) => {
-    setSelectedExperiment(id);
-  };
-
-  const handleBack = () => {
-    setSelectedExperiment(null);
-  };
-
+  const handleSelectExperiment = (id: number) => setSelectedExperiment(id);
+  const handleBack = () => setSelectedExperiment(null);
   const handleDelete = (id: number) => {
     removeExperiment(id);
     handleBack();
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-10">
+    <div className="w-full max-w-4xl mx-auto space-y-6 font-mono text-white">
       {selectedExperiment === null ? (
         <>
-          <h1 className="text-2xl font-bold text-white mb-4">
-            Saved Experiments
-          </h1>
+          <div className="flex items-center space-x-4 mb-8">
+            <h1 className="text-lg font-semibold text-white border-b-1">
+              Saved Experiments
+            </h1>
+          </div>
+          <div className="p-8 space-y-7 text-md w-full max-w-2xl md:max-w-3xl relative">
           <div className="space-y-4">
             {experiments.length > 0 ? (
-              experiments.map((experiment, index) => (
-                <ExperimentItem 
-                key={experiment.id}
-                experiment={experiment}
-                onClick={() => handleSelectExperiment(experiment.id)}
+              experiments.map((experiment) => (
+                <ExperimentItem
+                  key={experiment.id}
+                  experiment={experiment}
+                  onClick={() => handleSelectExperiment(experiment.id)}
                 />
               ))
             ) : (
               <p className="text-white">No experiments saved.</p>
             )}
+            </div>
           </div>
         </>
       ) : (
@@ -48,7 +46,7 @@ const ExperimentList: React.FC = () => {
           experiment={experiments.find((exp) => exp.id === selectedExperiment)!}
           onBack={handleBack}
           onDelete={() => handleDelete(selectedExperiment)}
-          onEdit={() => console.log("Edit experiment")} // Implement edit functionality later
+          onEdit={() => console.log("Edit experiment")}
         />
       )}
     </div>
@@ -57,5 +55,5 @@ const ExperimentList: React.FC = () => {
 
 export default ExperimentList;
 function removeExperiment(id: number) {
-  throw new Error("Function not implemented.");
+  console.error("Function not implemented.");
 }

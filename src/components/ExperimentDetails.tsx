@@ -22,65 +22,72 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
   onEdit,
 }) => {
   return (
-    <div className="w-full max-w-2xl mx-auto mt-10 p-6 bg-darkblue text-white rounded-md shadow-lg">
-      <button onClick={onBack} className="text-white mb-4">{`← Back`}</button>
-      <h1 className="text-xl font-bold mb-4">{experiment.experimentName}</h1>
+    <div className=" text-white rounded-lg shadow-lg space-y-10 font-mono">
+      <div className="flex items-center space-x-4 mb-8">
+        <button
+          onClick={onBack}
+          className="text-md text-gray-300 hover:underline"
+        >
+          ← Back
+        </button>
+      </div>
+      <div className="border-1 p-8 space-y-7 text-md w-full max-w-2xl md:max-w-3xl relative">
+        <div className="space-y-6">
+          <div className="flex justify-between">
+            <span>Name of experiment</span>
+            <span>{experiment.experimentName}</span>
+          </div>
 
-      <div className="border border-white rounded-md p-4 space-y-4">
-        <div className="flex justify-between items-center">
-          <span className="text-sm">Name of experiment</span>
-          <span className="text-lg">{experiment.experimentName}</span>
-        </div>
+          <div className="flex justify-between">
+            <span>Images ({experiment.images.length})</span>
+            <div className="flex space-x-2">
+              {experiment.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={URL.createObjectURL(image)}
+                  alt={`img-${index}`}
+                  className="w-8 h-8 rounded"
+                />
+              ))}
+            </div>
+          </div>
 
-        <div className="flex justify-between items-center">
-          <span className="text-sm">Images ({experiment.images.length})</span>
-          <div className="flex space-x-2">
-            {experiment.images.map((image, index) => (
-              <img
-                key={index}
-                src={URL.createObjectURL(image)}
-                alt={`img-${index}`}
-                className="w-8 h-8 rounded"
-              />
-            ))}
+          <div className="flex justify-between">
+            <span>Duration of each image</span>
+            <span>{experiment.duration}s</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span>Interval between images</span>
+            <span>{experiment.interval}s</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span>Baseline measurement</span>
+            <span>{experiment.baselineMeasurement ? "Yes" : "No"}</span>
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
-          <span className="text-sm">Duration of each image</span>
-          <span>{experiment.duration}</span>
+        <div className="flex flex-col sm:flex-row justify-around space-y-4 items-start sm:items-center py-4">
+          <button
+            className="bg-buttonBlue text-white py-2 rounded px-12"
+            onClick={() => console.log("Recording data...")}
+          >
+            RECORD DATA
+          </button>
+          <button
+            className="bg-transparent text-white py-2 rounded px-12 border-1"
+            onClick={onEdit}
+          >
+            EDIT
+          </button>
+          <button
+            className="bg-transparent text-red-500 py-2 rounded px-12 border-1"
+            onClick={onDelete}
+          >
+            DELETE
+          </button>
         </div>
-
-        <div className="flex justify-between items-center">
-          <span className="text-sm">Interval between each image</span>
-          <span>{experiment.interval}</span>
-        </div>
-
-        <div className="flex justify-between items-center">
-          <span className="text-sm">Baseline measurement (fixation cross)</span>
-          <span>{experiment.baselineMeasurement ? "Yes" : "No"}</span>
-        </div>
-      </div>
-
-      <div className="flex justify-between mt-6">
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-          onClick={() => console.log("Recording data...")}
-        >
-          RECORD DATA
-        </button>
-        <button
-          className="bg-white text-black border border-white px-4 py-2 rounded-md hover:bg-gray-300"
-          onClick={onEdit}
-        >
-          EDIT
-        </button>
-        <button
-          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-          onClick={onDelete}
-        >
-          DELETE
-        </button>
       </div>
     </div>
   );

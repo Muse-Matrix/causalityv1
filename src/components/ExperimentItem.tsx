@@ -3,42 +3,29 @@ import Button from './Button';
 import { Edit, Trash } from 'lucide-react';
 import { Experiment } from '@/hooks/experiment.context';
 
-
-
 interface Props {
-  experiment: Experiment
+  experiment: Experiment;
   onClick: () => void;
 }
 
 const ExperimentItem: React.FC<Props> = ({ experiment, onClick }) => {
-  const handleRecord = () => {
-    console.log(`Recording data for ${experiment.experimentName}`);
-  };
-
-  const handleAnalyze = () => {
-    console.log(`Analyzing data for ${experiment.experimentName}`);
-  };
-
-  const handleDelete = () => {
-    console.log(`Deleting ${experiment.experimentName}`);
-  };
+  const handleRecord = () => console.log(`Recording data for ${experiment.experimentName}`);
+  const handleAnalyze = () => console.log(`Analyzing data for ${experiment.experimentName}`);
+  const handleDelete = () => console.log(`Deleting ${experiment.experimentName}`);
 
   return (
-    <div className="flex justify-between items-center border-b border-gray-600 py-4"
+    <div className="flex justify-between items-center border-b border-gray-700 py-4 cursor-pointer"
       onClick={onClick}
     >
-      <span className="text-white">{experiment.experimentName}</span>
+      <span className="text-lg text-white">{experiment.experimentName}</span>
       <div className="flex space-x-4">
         {!experiment.isRecorded ? (
           <Button onClick={handleRecord}>Record Data</Button>
         ) : (
           <Button onClick={handleAnalyze}>Analyze Data</Button>
         )}
-        <Edit className="h-5 w-5 text-gray-300 cursor-pointer" />
-        <Trash
-          className="h-5 w-5 text-red-500 cursor-pointer"
-          onClick={handleDelete}
-        />
+        <Edit className="h-5 w-5 text-gray-300 cursor-pointer" onClick={() => console.log("Edit")} />
+        <Trash className="h-5 w-5 text-red-500 cursor-pointer" onClick={handleDelete} />
       </div>
     </div>
   );
