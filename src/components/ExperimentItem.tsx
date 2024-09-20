@@ -1,35 +1,32 @@
 import React from 'react';
 import Button from './Button';
 import { Edit, Trash } from 'lucide-react';
+import { Experiment } from '@/hooks/experiment.context';
 
-interface Experiment {
-  id: number;
-  name: string;
-  isRecording: boolean;
-}
+
 
 interface Props {
-  experiment: Experiment;
+  experiment: Experiment
 }
 
 const ExperimentItem: React.FC<Props> = ({ experiment }) => {
   const handleRecord = () => {
-    console.log(`Recording data for ${experiment.name}`);
+    console.log(`Recording data for ${experiment.experimentName}`);
   };
 
   const handleAnalyze = () => {
-    console.log(`Analyzing data for ${experiment.name}`);
+    console.log(`Analyzing data for ${experiment.experimentName}`);
   };
 
   const handleDelete = () => {
-    console.log(`Deleting ${experiment.name}`);
+    console.log(`Deleting ${experiment.experimentName}`);
   };
 
   return (
     <div className="flex justify-between items-center border-b border-gray-600 py-4">
-      <span className="text-white">{experiment.name}</span>
+      <span className="text-white">{experiment.experimentName}</span>
       <div className="flex space-x-4">
-        {experiment.isRecording ? (
+        {!experiment.isRecorded ? (
           <Button onClick={handleRecord}>Record Data</Button>
         ) : (
           <Button onClick={handleAnalyze}>Analyze Data</Button>
