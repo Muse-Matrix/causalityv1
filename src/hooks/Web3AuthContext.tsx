@@ -31,7 +31,7 @@ const defaultContext: Web3AuthContextType = {
 };
 
 const clientId =
-  "BPi5PB_UiIZ-cPz1GtV5i1I2iOSOHuimiXBI0e-Oe_u6X3oVAbCiAZOTEBtTXw4tsluTITPqA8zMsfxIKMjiqNQ"; // get from https://dashboard.web3auth.io
+  "BFmtrzOznWDTv5xrQNmN5t0rzF_Sq_CAME7iUwxgfG6Hm3rBW8rmNHoU_Ad54aBxPqYKbHqnmzU8bCH9Dqfu7b4"; // get from https://dashboard.web3auth.io
 // IMP END - Dashboard Registration
 
 // IMP START - Chain Config
@@ -55,7 +55,7 @@ const privateKeyProvider = new EthereumPrivateKeyProvider({
   
   const web3AuthOptions: Web3AuthOptions = {
     clientId,
-    web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
+    web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
     privateKeyProvider,
   }
   const web3auth = new Web3Auth(web3AuthOptions);
