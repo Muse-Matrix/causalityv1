@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import ExperimentList from '@/components/ExperimentList';
+import ProtectedRoutes from '@/hooks/ProtectedRoutes';
 
 const Experiments: React.FC = () => {
   return (
@@ -10,4 +11,4 @@ const Experiments: React.FC = () => {
   );
 };
 
-export default Experiments;
+export default ProtectedRoutes(Experiments);

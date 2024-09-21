@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-
-
+import { Web3AuthProvider } from "@/hooks/Web3AuthContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,11 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className="bg-customDark min-w-screen"
-      >
-        <Navbar/>
-        {children}
+      <body className="bg-customDark min-w-screen">
+        <Web3AuthProvider>
+          <Navbar />
+          {children}
+        </Web3AuthProvider>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import { Preconnect } from "@/components/Preconnect";
 import Recorder from "@/components/Recorder";
 import { MuseContext } from "@/hooks/muse.context";
+import ProtectedRoutes from "@/hooks/ProtectedRoutes";
 import { useContext, useState } from "react";
 
 const RecordArea: React.FC = () => {
@@ -27,4 +28,4 @@ const RecordArea: React.FC = () => {
   );
 };
 
-export default RecordArea;
+export default ProtectedRoutes(RecordArea);

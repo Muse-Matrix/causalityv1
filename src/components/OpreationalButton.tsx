@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ExperimentModal from "./AddExperimentModal";
+import ProtectedRoutes from "@/hooks/ProtectedRoutes";
 
 interface OpreationalButtonProps {
   selectedOperation: string;
@@ -66,4 +67,4 @@ const OpreationalButton: React.FC<OpreationalButtonProps> = ({
   );
 };
 
-export default OpreationalButton;
+export default ProtectedRoutes(OpreationalButton);

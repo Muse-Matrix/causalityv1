@@ -3,14 +3,17 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useActiveLink } from "../hooks/useActiveLink";
 import { navItems } from "@/utils/constant";
-import { useRouter, usePathname } from "next/navigation"; // Import usePathname
+import { useRouter, usePathname } from "next/navigation";
+import { useWeb3Auth } from "@/hooks/Web3AuthContext";
+import { UserIcon } from "lucide-react"; 
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { activeItem } = useActiveLink();
   const router = useRouter();
-  const pathname = usePathname(); // Get the current pathname
-
+  const pathname = usePathname();
+  const { loggedIn, login, logout } = useWeb3Auth();
+  
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -19,17 +22,23 @@ const Navbar: React.FC = () => {
     setIsMenuOpen(false);
   };
 
-  // Navigate to Playground only on initial load if on the root path ("/")
+  // Trigger login automatically if not logged in
   useEffect(() => {
-    if (pathname === "/" || pathname === "/playground") {
-      router.push("/playground/record"); 
+    if (!loggedIn) {
+      login();
     }
-  }, [pathname, router]);
+  }, [loggedIn, login]);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (loggedIn && (pathname === "/" || pathname === "/playground")) {
+      router.push("/playground/record");
+    }
+  }, [loggedIn, pathname, router]);
 
   return (
     <header className="w-full">
       <nav className="bg-black text-white px-4 py-4 sm:px-8 sm:py-4 flex justify-between items-center border-b-1 border-b-white/50 relative">
-        {/* Website Name */}
         <div className="text-lg">causality.network</div>
 
         {/* Hamburger Button */}
@@ -90,13 +99,25 @@ const Navbar: React.FC = () => {
               </Link>
             ))}
 
-            {/* Login Button */}
-            <button
-              className="bg-lightBlue text-white px-4 py-2 rounded-md hover:bg-opacity-80 transition-colors"
-              onClick={closeMenu}
-            >
-              LOGIN
-            </button>
+            {/* Show avatar if logged in, otherwise show Login button */}
+            {loggedIn ? (
+              <div className="flex items-center space-x-4">
+                <UserIcon className="text-white w-8 h-8" />
+                <button
+                  className="bg-lightBlue text-white px-4 py-2 rounded-md hover:bg-opacity-80 transition-colors"
+                  onClick={logout}
+                >
+                  LOGOUT
+                </button>
+              </div>
+            ) : (
+              <button
+                className="bg-lightBlue text-white px-4 py-2 rounded-md hover:bg-opacity-80 transition-colors"
+                onClick={login}
+              >
+                LOGIN
+              </button>
+            )}
           </div>
         </div>
       </nav>
