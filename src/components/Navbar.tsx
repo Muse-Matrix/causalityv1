@@ -14,6 +14,7 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const { loggedIn, login, logout } = useWeb3Auth();
   
+  
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };

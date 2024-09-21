@@ -1,4 +1,5 @@
 import { useExperimentContext } from "@/hooks/experiment.context";
+import { uploadToIpfs } from "@/services/storage.service";
 import { useState } from "react";
 
 export default function ExperimentModal({
@@ -9,20 +10,27 @@ export default function ExperimentModal({
   const { addExperiment, experiments } = useExperimentContext();
   const [experimentName, setExperimentName] = useState('');
   const [images, setImages] = useState<File[]>([]);
-  const [duration, setDuration] = useState(10); // Default 10s
-  const [interval, setInterval] = useState(5); // Default 5s
+  const [duration, setDuration] = useState(10); 
+  const [interval, setInterval] = useState(5); 
   const [baselineMeasurement, setBaselineMeasurement] = useState(true);
+  const [uploadedCids, setUploadedCids] = useState<string[]>([]);
+
+  const uploadImage = async(file: File)=>{
+    const cid = await uploadToIpfs(file);
+    return cid;
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setImages(Array.from(e.target.files)); // Handle multiple file uploads
+      setImages(Array.from(e.target.files));  
     }
   };
 
-  const handleSaveExperiment = () => {
+  const handleSaveExperiment = async() => {
+    const cids = await Promise.all(images.map(file => uploadImage(file)));
     const newExperiment = {
       experimentName,
-      images,
+      images: cids,
       duration,
       interval,
       baselineMeasurement,
@@ -36,7 +44,7 @@ console.log(newExperiment);
     setDuration(10);
     setInterval(5);
     setBaselineMeasurement(true);
-    alert("Experiment Saved!")
+    // alert("Experiment Saved!")
   };
 
   return (

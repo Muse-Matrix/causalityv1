@@ -4,7 +4,7 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 export interface Experiment {
   id: number;
   experimentName: string;
-  images: File[];
+  images: any;
   duration: number;
   interval: number;
   baselineMeasurement: boolean;

@@ -1,10 +1,11 @@
-import React from "react";
+import { downloadFromIpfs } from "@/services/storage.service";
+import React, { useEffect, useState } from "react";
 
 interface ExperimentDetailsProps {
   experiment: {
     id: number;
     experimentName: string;
-    images: File[];
+    images: { cid: string }[]; 
     duration: number;
     interval: number;
     baselineMeasurement: boolean;
@@ -21,13 +22,35 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
   onDelete,
   onEdit,
 }) => {
+  const [imageUrls, setImageUrls] = useState<(string | undefined)[]>([]);
+
+  // Function to download all files for the experiment
+  const downloadImages = async (cids: any[]) => {
+    try {
+      const urls = await Promise.all(
+        cids.map((cid) => {
+            return downloadFromIpfs(cid); 
+        })
+      );
+      setImageUrls(urls);
+    } catch (error) {
+      console.error("Error downloading images", error);
+    }
+  };
+  
+
+  // UseEffect to download images when the component loads
+  useEffect(() => {
+    if (experiment.images.length > 0) {
+      const cids = experiment.images.map((image) => image); // Extract CIDs from the images
+      downloadImages(cids);
+    }
+  }, [experiment.images]);
+
   return (
-    <div className=" text-white rounded-lg shadow-lg space-y-10 font-mono">
+    <div className="text-white rounded-lg shadow-lg space-y-10 font-mono">
       <div className="flex items-center space-x-4 mb-8">
-        <button
-          onClick={onBack}
-          className="text-md text-gray-300 hover:underline"
-        >
+        <button onClick={onBack} className="text-md text-gray-300 hover:underline">
           ← Back
         </button>
       </div>
@@ -41,13 +64,17 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
           <div className="flex justify-between">
             <span>Images ({experiment.images.length})</span>
             <div className="flex space-x-2">
-              {experiment.images.map((image, index) => (
-                <img
-                  key={index}
-                  src={URL.createObjectURL(image)}
-                  alt={`img-${index}`}
-                  className="w-8 h-8 rounded"
-                />
+              {imageUrls.map((url, index) => (
+                url ? (
+                  <img
+                    key={index}
+                    src={url}
+                    alt={`img-${index}`}
+                    className="w-8 h-8 rounded"
+                  />
+                ) : (
+                  <div key={index} className="w-8 h-8 rounded bg-gray-800" />
+                )
               ))}
             </div>
           </div>

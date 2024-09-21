@@ -7,7 +7,6 @@ export const useActiveLink = () => {
   const pathname = usePathname(); // Get the current path
 
   useEffect(() => {
-    // Set the active item based on the current pathname
     const handleRouteChange = (url: string) => {
       const currentItem = navItems.find((item) => item.href === url);
       if (currentItem) {

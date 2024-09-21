@@ -154,4 +154,34 @@ export async function uploadToIpfs(file: File) {
   } catch (error) {
     console.error("Error uploading to IPFS", error);
   }
+  
 }
+
+export async function downloadFromIpfs(cid: string) {
+  try {
+    if (!cid) {
+      throw new Error("No CID provided");
+    }
+    
+    const helia = await createHelia();
+    const fs = unixfs(helia); 
+    
+    const file = await fs.cat(cid as any);
+    const chunks: Uint8Array[] = [];
+    
+    for await (const chunk of file) {
+      chunks.push(chunk);
+    }
+
+    await helia.stop();
+
+    const blob = new Blob(chunks, { type: "image/jpeg" });
+    const url = URL.createObjectURL(blob);
+
+    return url;
+  } catch (error) {
+    console.error("Error downloading from IPFS", error);
+    throw error; // Rethrow the error for further handling
+  }
+}
+
