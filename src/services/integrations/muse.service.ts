@@ -23,7 +23,7 @@ export enum SIGNAL_QUALITY {
 export enum SIGNAL_QUALITY_THRESHOLDS {
   BAD = 15,
   OK = 10,
-  GREAT = 1.5, // Below 1.5 usually indicates not connected to anything
+  GREAT = 1.5,
 }
 
 export interface Device {

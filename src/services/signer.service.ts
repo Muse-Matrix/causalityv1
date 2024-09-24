@@ -3,9 +3,9 @@ import { ethers } from "ethers";
 import sha256 from "fast-sha256";
 
 // ethereum mainnet
-const easContractAddress = "0xC2679fBD37d54388Ce493F1DB75320D236e1815e";
-// schema https://sepolia.easscan.org/schema/view/0xbecbf8b1bd8992cbd43db64be07a2cd64a47fadab545ad2e77859f9e753bb5fb
-const schemaUID = "0xbecbf8b1bd8992cbd43db64be07a2cd64a47fadab545ad2e77859f9e753bb5fb";
+const easContractAddress = process.env.EAS_CONTRACT_ADDRESS || '';
+
+const schemaUID = process.env.EAS_SCHEMA_ID || '';
 const eas = new EAS(easContractAddress);
 
 export async function getFileHash(file: File): Promise<string> {
