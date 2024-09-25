@@ -222,13 +222,16 @@ export class MuseEEGService {
           }
         );
         console.log("attestation, saving dataset", signature);
+        if(signature){
+          const downloadLink = document.createElement("a");
+          downloadLink.href = URL.createObjectURL(brainwavesCSV);
+          downloadLink.download = `rawBrainwaves_${this.recordingStartTimestamp}.csv`;
+          downloadLink.click();
+        }
       } catch (e) {
         console.log("error signing data", e);
       }
-      const downloadLink = document.createElement("a");
-      downloadLink.href = URL.createObjectURL(brainwavesCSV);
-      downloadLink.download = `rawBrainwaves_${this.recordingStartTimestamp}.csv`;
-      downloadLink.click();
+      
     }
 
     try {
