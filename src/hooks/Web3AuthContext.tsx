@@ -1,6 +1,11 @@
-"use client"
+"use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { CHAIN_NAMESPACES, IAdapter, IProvider, WEB3AUTH_NETWORK } from "@web3auth/base";
+import {
+  CHAIN_NAMESPACES,
+  IAdapter,
+  IProvider,
+  WEB3AUTH_NETWORK,
+} from "@web3auth/base";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { getDefaultExternalAdapters } from "@web3auth/default-evm-adapter";
 import { Web3Auth, Web3AuthOptions } from "@web3auth/modal";
@@ -48,18 +53,28 @@ const chainConfig = {
 
 // IMP START - SDK Initialization
 const privateKeyProvider = new EthereumPrivateKeyProvider({
-    config: { chainConfig },
-  });
-  
-  const web3AuthOptions: Web3AuthOptions = {
-    clientId,
-    web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
-    uiConfig:{
-      mode: 'dark'
+  config: { chainConfig },
+});
+
+const web3AuthOptions: Web3AuthOptions = {
+  clientId,
+  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
+  uiConfig: {
+    appName: "causality.network",
+    // appLogo: "https://web3auth.io/images/w3a-L-Favicon-1.svg", // Your App Logo Here
+    theme: {
+      primary: '#2826FF',
     },
-    privateKeyProvider,
-  }
-  const web3auth = new Web3Auth(web3AuthOptions);
+    mode: "dark",
+    logoLight: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
+    logoDark: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
+    defaultLanguage: "en", // en, de, ja, ko, zh, es, fr, pt, nl
+    loginGridCol: 3,
+    primaryButton: "externalLogin",
+  },
+  privateKeyProvider,
+};
+const web3auth = new Web3Auth(web3AuthOptions);
 
 // Context creation with the correct type
 const Web3AuthContext = createContext<Web3AuthContextType>(defaultContext);
@@ -68,65 +83,68 @@ const Web3AuthContext = createContext<Web3AuthContextType>(defaultContext);
 export const useWeb3Auth = () => {
   return useContext(Web3AuthContext);
 };
-  
 
 // Provider component
-export const Web3AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [provider, setProvider] = useState<IProvider | null>(null);
-    const [loggedIn, setLoggedIn] = useState(false);
-  
-    useEffect(() => {
-      const init = async () => {
-        try {
-          // IMP START - Configuring External Wallets
-          const adapters = await getDefaultExternalAdapters({ options: web3AuthOptions });
-          adapters.forEach((adapter: IAdapter<unknown>) => {
-            web3auth.configureAdapter(adapter);
-          });
-          // IMP END - Configuring External Wallets
-          // IMP START - SDK Initialization
-          await web3auth.initModal();
-          // IMP END - SDK Initialization
-          setProvider(web3auth.provider);
-  
-          if (web3auth.connected) {
-            setLoggedIn(true);
-          }
-        } catch (error) {
-          console.error(error);
+export const Web3AuthProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [provider, setProvider] = useState<IProvider | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        // IMP START - Configuring External Wallets
+        const adapters = await getDefaultExternalAdapters({
+          options: web3AuthOptions,
+        });
+        adapters.forEach((adapter: IAdapter<unknown>) => {
+          web3auth.configureAdapter(adapter);
+        });
+        // IMP END - Configuring External Wallets
+        // IMP START - SDK Initialization
+        await web3auth.initModal();
+        // IMP END - SDK Initialization
+        setProvider(web3auth.provider);
+
+        if (web3auth.connected) {
+          setLoggedIn(true);
         }
-      };
-  
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     init();
-    }, []);
+  }, []);
 
-    const login = async () => {
-        try {
-          console.log("Login button clicked");
-          const web3authProvider = await web3auth.connect();
-          console.log("Connected: ", web3auth.connected);
-          setProvider(web3authProvider);
-      
-          if (web3auth.connected) {
-            setLoggedIn(true);
-          }
-        } catch (error) {
-          console.error("Login failed:", error);
-        }
-      };
-      
+  const login = async () => {
+    try {
+      console.log("Login button clicked");
+      const web3authProvider = await web3auth.connect();
+      console.log("Connected: ", web3auth.connected);
+      setProvider(web3authProvider);
 
-      const logout = async () => {
-        try {
-          await web3auth.logout();
-          setProvider(null);
-          setLoggedIn(false);
-          console.log("Successfully logged out");
-        } catch (error) {
-          console.error("Logout failed:", error);
-        }
-      };
-      
+      if (web3auth.connected) {
+        setLoggedIn(true);
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await web3auth.logout();
+      setProvider(null);
+      setLoggedIn(false);
+      console.log("Successfully logged out");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   const getUserInfo = async () => {
     return await web3auth.getUserInfo();
