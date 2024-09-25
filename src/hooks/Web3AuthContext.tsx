@@ -30,7 +30,7 @@ const defaultContext: Web3AuthContextType = {
   sendTransaction: async () => null,
 };
 
-const clientId = process.env.WEB3AUTH_CLIENT_ID || ''
+const clientId = process.env.WEB3AUTH_CLIENT_ID || 'BPi5PB_UiIZ-cPz1GtV5i1I2iOSOHuimiXBI0e-Oe_u6X3oVAbCiAZOTEBtTXw4tsluTITPqA8zMsfxIKMjiqNQ'
 
 // IMP START - Chain Config
 const chainConfig = {

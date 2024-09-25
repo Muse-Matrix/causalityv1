@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import sha256 from "fast-sha256";
 
 // ethereum mainnet
-const easContractAddress = process.env.EAS_CONTRACT_ADDRESS || '';
+const easContractAddress = process.env.EAS_CONTRACT_ADDRESS || '0x90B07C1b87c3343f8126b055f1F705b2Efcc75AF';
 
 const schemaUID = process.env.EAS_SCHEMA_ID || '';
 const eas = new EAS(easContractAddress);
@@ -32,7 +32,7 @@ export async function getFileHash(file: File): Promise<string> {
 export const signData = async (
   name: string,
   startTimestamp: number,
-  endTimestamp: number,
+  stopTimestamp: number,
   contentHash: string,
   additionalMeta: object
 ) => {
@@ -73,7 +73,7 @@ export const signData = async (
     },
     { name: "name", value: name, type: "string" },
     { name: "startTimestamp", value: startTimestamp, type: "uint48" },
-    { name: "endTimestamp", value: endTimestamp, type: "uint48" },
+    { name: "endTimestamp", value: stopTimestamp, type: "uint48" },
     { name: "additionalMeta", value: JSON.stringify(additionalMeta), type: "string" },
   ]);
 
@@ -86,7 +86,7 @@ export const signData = async (
     },
     { name: "name", value: name, type: "string" },
     { name: "startTimestamp", value: startTimestamp, type: "uint48" },
-    { name: "endTimestamp", value: endTimestamp, type: "uint48" },
+    { name: "endTimestamp", value: stopTimestamp, type: "uint48" },
     { name: "additionalMeta", value: JSON.stringify(additionalMeta), type: "string" },
   ]);
 
