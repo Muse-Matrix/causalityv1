@@ -3,9 +3,9 @@ import { ethers } from "ethers";
 import sha256 from "fast-sha256";
 
 // ethereum mainnet
-const easContractAddress = process.env.EAS_CONTRACT_ADDRESS || '0x90B07C1b87c3343f8126b055f1F705b2Efcc75AF';
+const easContractAddress = process.env.EAS_CONTRACT_ADDRESS || '0xC2679fBD37d54388Ce493F1DB75320D236e1815e';
 
-const schemaUID = process.env.EAS_SCHEMA_ID || '';
+const schemaUID = process.env.EAS_SCHEMA_ID || '0x0d71cdf8a5d3c47d43dc1fdd3da238a42eef3b9083958cb238cfb4ed9416f180';
 const eas = new EAS(easContractAddress);
 
 export async function getFileHash(file: File): Promise<string> {
