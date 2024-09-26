@@ -3,9 +3,9 @@ import { ethers } from "ethers";
 import sha256 from "fast-sha256";
 
 // ethereum mainnet
-const easContractAddress = '0xC2679fBD37d54388Ce493F1DB75320D236e1815e';
+const easContractAddress = process.env.EAS_CONTRACT_ADDRESS || '0xC2679fBD37d54388Ce493F1DB75320D236e1815e';
 
-const schemaUID = '0x0d71cdf8a5d3c47d43dc1fdd3da238a42eef3b9083958cb238cfb4ed9416f180';
+const schemaUID = process.env.EAS_SCHEMA_ID || '0x0d71cdf8a5d3c47d43dc1fdd3da238a42eef3b9083958cb238cfb4ed9416f180';
 const eas = new EAS(easContractAddress);
 
 export async function getFileHash(file: File): Promise<string> {
@@ -32,7 +32,7 @@ export async function getFileHash(file: File): Promise<string> {
 export const signData = async (
   name: string,
   startTimestamp: number,
-  endTimestamp: number,
+  stopTimestamp: number,
   contentHash: string,
   additionalMeta: object
 ) => {
@@ -61,7 +61,7 @@ export const signData = async (
 
   // Initialize SchemaEncoder with the schema string
   const schemaEncoder = new SchemaEncoder(
-    "bytes32 contentHash,address owner,string name,uint48 startTimestamp,uint48 endTimestamp,string additionalMeta"
+    "bytes32 contentHash,address owner,string name,uint48 startTimestamp,uint48 stopTimestamp,string additionalMeta"
   );
 
   console.log("message", [
@@ -73,7 +73,7 @@ export const signData = async (
     },
     { name: "name", value: name, type: "string" },
     { name: "startTimestamp", value: startTimestamp, type: "uint48" },
-    { name: "endTimestamp", value: endTimestamp, type: "uint48" },
+    { name: "stopTimestamp", value: stopTimestamp, type: "uint48" },
     { name: "additionalMeta", value: JSON.stringify(additionalMeta), type: "string" },
   ]);
 
@@ -86,7 +86,7 @@ export const signData = async (
     },
     { name: "name", value: name, type: "string" },
     { name: "startTimestamp", value: startTimestamp, type: "uint48" },
-    { name: "endTimestamp", value: endTimestamp, type: "uint48" },
+    { name: "stopTimestamp", value: stopTimestamp, type: "uint48" },
     { name: "additionalMeta", value: JSON.stringify(additionalMeta), type: "string" },
   ]);
 
