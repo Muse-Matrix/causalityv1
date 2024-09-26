@@ -2,10 +2,9 @@ import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import sha256 from "fast-sha256";
 
-// ethereum mainnet
-const easContractAddress = process.env.EAS_CONTRACT_ADDRESS || '0xC2679fBD37d54388Ce493F1DB75320D236e1815e';
+const easContractAddress = '0x4200000000000000000000000000000000000021';
 
-const schemaUID = process.env.EAS_SCHEMA_ID || '0x0d71cdf8a5d3c47d43dc1fdd3da238a42eef3b9083958cb238cfb4ed9416f180';
+const schemaUID = '0xbecbf8b1bd8992cbd43db64be07a2cd64a47fadab545ad2e77859f9e753bb5fb';
 const eas = new EAS(easContractAddress);
 
 export async function getFileHash(file: File): Promise<string> {
