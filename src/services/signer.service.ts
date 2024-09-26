@@ -41,11 +41,11 @@ export const signData = async (
 
   if ((window as any).ethereum == null) {
     console.log("not using metamask");
-    provider = ethers.getDefaultProvider();
+    provider = ethers.getDefaultProvider(8453);
   } else {
     console.log("using metamask");
     console.log((window as any).ethereum);
-    provider = new ethers.BrowserProvider((window as any).ethereum);
+    provider = new ethers.BrowserProvider((window as any).ethereum, 8453);
     console.log("got provider", provider);
     signer = await provider.getSigner();
     console.log("got signer", signer);
