@@ -2,9 +2,10 @@ import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import sha256 from "fast-sha256";
 
-const easContractAddress = '0x4200000000000000000000000000000000000021';
+const easContractAddress = "0x4200000000000000000000000000000000000021"; 
 
-const schemaUID = '0xbecbf8b1bd8992cbd43db64be07a2cd64a47fadab545ad2e77859f9e753bb5fb';
+const schemaUID = "0xbecbf8b1bd8992cbd43db64be07a2cd64a47fadab545ad2e77859f9e753bb5fb";
+
 const eas = new EAS(easContractAddress);
 
 export async function getFileHash(file: File): Promise<string> {
@@ -31,74 +32,58 @@ export async function getFileHash(file: File): Promise<string> {
 export const signData = async (
   name: string,
   startTimestamp: number,
-  stopTimestamp: number,
+  endTimestamp: number,
   contentHash: string,
   additionalMeta: object
 ) => {
   let signer = null;
   let provider;
-  console.log("signing data");
+  console.log("Signing data...");
 
+  // Check for Metamask or fallback to default Base Mainnet provider
   if ((window as any).ethereum == null) {
-    console.log("not using metamask");
-    provider = ethers.getDefaultProvider(8453);
+    console.log("Metamask not detected, using default Base Mainnet provider");
+    provider = ethers.getDefaultProvider("base"); 
   } else {
-    console.log("using metamask");
-    console.log((window as any).ethereum);
+    console.log("Using Metamask for Base network");
     provider = new ethers.BrowserProvider((window as any).ethereum, 8453);
-    console.log("got provider", provider);
     signer = await provider.getSigner();
-    console.log("got signer", signer);
   }
 
   if (!signer) {
     throw new Error("No signer found");
   }
 
-  // Signer must be an ethers-like signer.
+  // Connect the EAS instance to the signer
   await eas.connect(signer);
 
   // Initialize SchemaEncoder with the schema string
   const schemaEncoder = new SchemaEncoder(
-    "bytes32 contentHash,address owner,string name,uint48 startTimestamp,uint48 stopTimestamp,string additionalMeta"
+    "bytes32 contentHash,address owner,string name,uint48 startTimestamp,uint48 endTimestamp,string additionalMeta"
   );
 
-  console.log("message", [
-    { name: "contentHash", value: contentHash, type: "bytes32" },
-    {
-      name: "owner",
-      value: (await signer.getAddress()) ?? "0x0000000000000000000000000000000000000000",
-      type: "address",
-    },
-    { name: "name", value: name, type: "string" },
-    { name: "startTimestamp", value: startTimestamp, type: "uint48" },
-    { name: "stopTimestamp", value: stopTimestamp, type: "uint48" },
-    { name: "additionalMeta", value: JSON.stringify(additionalMeta), type: "string" },
-  ]);
-
+  // Encode the attestation data
   const encodedData = schemaEncoder.encodeData([
     { name: "contentHash", value: contentHash, type: "bytes32" },
-    {
-      name: "owner",
-      value: (await signer.getAddress()) ?? "0x0000000000000000000000000000000000000000",
-      type: "address",
-    },
+    { name: "owner", value: await signer.getAddress(), type: "address" },
     { name: "name", value: name, type: "string" },
     { name: "startTimestamp", value: startTimestamp, type: "uint48" },
-    { name: "stopTimestamp", value: stopTimestamp, type: "uint48" },
+    { name: "endTimestamp", value: endTimestamp, type: "uint48" },
     { name: "additionalMeta", value: JSON.stringify(additionalMeta), type: "string" },
   ]);
 
+  // Create the attestation on Base
   const tx = await eas.attest({
     schema: schemaUID,
     data: {
       recipient: "0x0000000000000000000000000000000000000000",
       expirationTime: BigInt(0),
-      revocable: true, // Be aware that if your schema is not revocable, this MUST be false
+      revocable: true, // Set this based on your schema configuration
       data: encodedData,
     },
-  });
+  },{gasLimit: 500000});
 
+  // Wait for the transaction to be confirmed
   const newAttestationUID = await tx.wait();
   console.log("New attestation UID:", newAttestationUID);
   return newAttestationUID;
