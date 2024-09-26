@@ -61,7 +61,7 @@ export const signData = async (
 
   // Initialize SchemaEncoder with the schema string
   const schemaEncoder = new SchemaEncoder(
-    "bytes32 contentHash,address owner,string name,uint48 startTimestamp,uint48 endTimestamp,string additionalMeta"
+    "bytes32 contentHash,address owner,string name,uint48 startTimestamp,uint48 stopTimestamp,string additionalMeta"
   );
 
   console.log("message", [
@@ -73,7 +73,7 @@ export const signData = async (
     },
     { name: "name", value: name, type: "string" },
     { name: "startTimestamp", value: startTimestamp, type: "uint48" },
-    { name: "endTimestamp", value: stopTimestamp, type: "uint48" },
+    { name: "stopTimestamp", value: stopTimestamp, type: "uint48" },
     { name: "additionalMeta", value: JSON.stringify(additionalMeta), type: "string" },
   ]);
 
@@ -86,7 +86,7 @@ export const signData = async (
     },
     { name: "name", value: name, type: "string" },
     { name: "startTimestamp", value: startTimestamp, type: "uint48" },
-    { name: "endTimestamp", value: stopTimestamp, type: "uint48" },
+    { name: "stopTimestamp", value: stopTimestamp, type: "uint48" },
     { name: "additionalMeta", value: JSON.stringify(additionalMeta), type: "string" },
   ]);
 
