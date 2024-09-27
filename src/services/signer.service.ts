@@ -43,10 +43,10 @@ export const signData = async (
   // Check for Metamask or fallback to default Base Mainnet provider
   if ((window as any).ethereum == null) {
     console.log("Metamask not detected, using default Base Mainnet provider");
-    provider = ethers.getDefaultProvider("base"); 
+    provider = ethers.getDefaultProvider(); 
   } else {
     console.log("Using Metamask for Base network");
-    provider = new ethers.BrowserProvider((window as any).ethereum, 8453);
+    provider = new ethers.BrowserProvider((window as any).ethereum);
     signer = await provider.getSigner();
   }
 
@@ -58,9 +58,7 @@ export const signData = async (
   await eas.connect(signer);
 
   // Initialize SchemaEncoder with the schema string
-  const schemaEncoder = new SchemaEncoder(
-    "bytes32 contentHash,address owner,string name,uint48 startTimestamp,uint48 endTimestamp,string additionalMeta"
-  );
+  const schemaEncoder = new SchemaEncoder("bytes32 contentHash,address owner,string name,uint48 startTimestamp,uint48 endTimestamp,string additionalMeta");
 
   // Encode the attestation data
   const encodedData = schemaEncoder.encodeData([
@@ -78,10 +76,10 @@ export const signData = async (
     data: {
       recipient: "0x0000000000000000000000000000000000000000",
       expirationTime: BigInt(0),
-      revocable: true, // Set this based on your schema configuration
+      revocable: false, 
       data: encodedData,
     },
-  },{gasLimit: 500000});
+  });
 
   // Wait for the transaction to be confirmed
   const newAttestationUID = await tx.wait();
