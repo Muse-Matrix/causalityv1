@@ -1,6 +1,7 @@
 import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import sha256 from "fast-sha256";
+import { useWalletClient } from "wagmi";
 
 const easContractAddress = "0x4200000000000000000000000000000000000021"; 
 
@@ -39,6 +40,9 @@ export const signData = async (
   let signer = null;
   let provider;
   console.log("Signing data...");
+  const { data: walletClient, isError, isLoading } = useWalletClient()
+  console.log(walletClient, isError, isLoading);
+  
 
   // Check for Metamask or fallback to default Base Mainnet provider
   if ((window as any).ethereum == null) {
@@ -46,9 +50,16 @@ export const signData = async (
     provider = ethers.getDefaultProvider(); 
   } else {
     console.log("Using Metamask for Base network");
-    provider = new ethers.BrowserProvider((window as any).ethereum);
+    // await (window as any).ethereum.request({
+    //   method: 'wallet_switchEthereumChain',
+    //   params: [{ chainId: 0x8453 }],
+    // })
+    provider = new ethers.BrowserProvider((window as any).ethereum, '0x8453');
     signer = await provider.getSigner();
   }
+
+  console.log("provider:", provider, signer);
+  
 
   if (!signer) {
     throw new Error("No signer found");
