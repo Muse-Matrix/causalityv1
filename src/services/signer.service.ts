@@ -1,6 +1,7 @@
 import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import sha256 from "fast-sha256";
+import { base } from '@wagmi/core/chains'
 
 const easContractAddress = "0x4200000000000000000000000000000000000021"; 
 
@@ -46,11 +47,7 @@ export const signData = async (
     provider = ethers.getDefaultProvider(); 
   } else {
     console.log("Using Metamask for Base network");
-    // await (window as any).ethereum.request({
-    //   method: 'wallet_switchEthereumChain',
-    //   params: [{ chainId: 0x8453 }],
-    // })
-    provider = new ethers.BrowserProvider((window as any).ethereum, '0x2105');
+    provider = new ethers.BrowserProvider((window as any).ethereum, base);
     signer = await provider.getSigner();
   }
 
