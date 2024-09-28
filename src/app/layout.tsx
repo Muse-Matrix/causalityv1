@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import { Web3AuthProvider } from "@/hooks/Web3AuthContext";
+// import { Web3AuthProvider } from "@/hooks/Web3AuthContext";
+import { headers } from "next/headers";
+import WagmiAuthProvider from "@/hooks/WagmiAuth.context";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,13 +15,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookies = headers().get('cookie')
   return (
     <html lang="en">
       <body className="bg-customDark min-w-screen">
-        <Web3AuthProvider>
+          <WagmiAuthProvider cookies={cookies}>
           <Navbar />
           {children}
-        </Web3AuthProvider>
+          </WagmiAuthProvider>
       </body>
     </html>
   );
