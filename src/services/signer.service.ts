@@ -39,16 +39,23 @@ export const signData = async (
   let signer = null;
   let provider;
   console.log("Signing data...");
-
+  
   // Check for Metamask or fallback to default Base Mainnet provider
   if ((window as any).ethereum == null) {
     console.log("Metamask not detected, using default Base Mainnet provider");
     provider = ethers.getDefaultProvider(); 
   } else {
     console.log("Using Metamask for Base network");
-    provider = new ethers.BrowserProvider((window as any).ethereum);
+    // await (window as any).ethereum.request({
+    //   method: 'wallet_switchEthereumChain',
+    //   params: [{ chainId: 0x8453 }],
+    // })
+    provider = new ethers.BrowserProvider((window as any).ethereum, '0x2105');
     signer = await provider.getSigner();
   }
+
+  console.log("provider:", provider, signer);
+  
 
   if (!signer) {
     throw new Error("No signer found");
