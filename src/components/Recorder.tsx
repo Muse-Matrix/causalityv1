@@ -38,7 +38,7 @@ const Recorder = () => {
     if (museEEGService) {
       setIsMuseRecording(false);
       setIsMuseDataRecorded(true);
-      await museEEGService.stopRecording(true);
+      await museEEGService.stopRecording();
     }
   }
 
@@ -55,7 +55,7 @@ const Recorder = () => {
     if (museEEGService) {
       setIsMuseRecording(false);
       setIsMuseDataRecorded(false);
-      await museEEGService.stopRecording(true);
+      await museEEGService.stopRecording();
     }
   }
 
