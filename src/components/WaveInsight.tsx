@@ -42,7 +42,7 @@ export const WaveInsight: FC<IExperiment> = (experiment) => {
   async function stopMuseRecording() {
     if (museEEGService) {
       setIsMuseRecording(false);
-      await museEEGService.stopRecording(true);
+      await museEEGService.stopRecording();
     }
   }
 
