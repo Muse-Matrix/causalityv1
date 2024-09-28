@@ -4,15 +4,16 @@ import Link from "next/link";
 import { useActiveLink } from "../hooks/useActiveLink";
 import { navItems } from "@/utils/constant";
 import { useRouter, usePathname } from "next/navigation";
-import { useWeb3Auth } from "@/hooks/Web3AuthContext";
-import { UserIcon } from "lucide-react"; 
+import { useAccount } from "wagmi";
+import { useAppKit } from "@reown/appkit/react";
 
 const Navbar: React.FC = () => {
+  const { isConnected } = useAccount();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { activeItem } = useActiveLink();
   const router = useRouter();
   const pathname = usePathname();
-  const { loggedIn, login, logout } = useWeb3Auth();
+  const { open } = useAppKit()
   
   
   const toggleMenu = () => {
@@ -25,17 +26,17 @@ const Navbar: React.FC = () => {
 
   // Trigger login automatically if not logged in
   useEffect(() => {
-    if (!loggedIn) {
-      login();
+    if (!isConnected) {
+      open();
     }
-  }, [loggedIn, login]);
+  }, [isConnected, open]);
 
   // Redirect if already logged in
   useEffect(() => {
-    if (loggedIn && (pathname === "/" || pathname === "/playground")) {
+    if (isConnected && (pathname === "/" || pathname === "/playground")) {
       router.push("/playground/record");
     }
-  }, [loggedIn, pathname, router]);
+  }, [isConnected, pathname, router]);
 
   return (
     <header className="w-full">
@@ -98,27 +99,8 @@ const Navbar: React.FC = () => {
               >
                 {item.name}
               </Link>
-            ))}
-
-            {/* Show avatar if logged in, otherwise show Login button */}
-            {loggedIn ? (
-              <div className="flex items-center space-x-4">
-                <UserIcon className="text-white w-8 h-8" />
-                <button
-                  className="bg-lightBlue text-white px-4 py-2 rounded-md hover:bg-opacity-80 transition-colors"
-                  onClick={logout}
-                >
-                  LOGOUT
-                </button>
-              </div>
-            ) : (
-              <button
-                className="bg-lightBlue text-white px-4 py-2 rounded-md hover:bg-opacity-80 transition-colors"
-                onClick={login}
-              >
-                LOGIN
-              </button>
-            )}
+            ))}     
+              <w3m-button />
           </div>
         </div>
       </nav>

@@ -1,9 +1,7 @@
 "use client";
 import OpreationalButton from "@/components/OpreationalButton";
 import { MuseContextProvider } from "@/hooks/muse.context";
-import RecordArea from "./record/page";
 import { useEffect, useState } from "react";
-import Experiments from "./experiments/page";
 import { usePathname, useRouter } from "next/navigation";
 import { ExperimentProvider } from "@/hooks/experiment.context";
 
