@@ -184,7 +184,7 @@ export class MuseEEGService {
     this.museClient.start();
   }
 
-  async stopRecording(withDownload = false, signDataset = false) {
+  async stopRecording() {
     this.museClient.pause();
     // prepare files for download
     const datasetExport: DatasetExport = {
@@ -196,9 +196,6 @@ export class MuseEEGService {
   }
 
   async dowloadOrSaveRecordedData(withDownload = false, signDataset = false){
-    // prepare files for download
-    console.log("DOWNLOAD: ",withDownload);
-    
     const datasetExport: DatasetExport = {
       fileNames: [`rawBrainwaves_${this.recordingStartTimestamp}.csv`, `events_${this.recordingStartTimestamp}.csv`],
       dataSets: [this.rawBrainwavesParsed, this.eventSeries],
@@ -230,26 +227,15 @@ export class MuseEEGService {
         }
       } catch (e) {
         console.log("error signing data", e);
+      } finally {
+        this.ppgSeries = [];
+        this.rawBrainwaveSeries = {};
+        this.rawBrainwavesParsed = [];
+        this.eventSeries = [];
+        this.accelerometerSeries = [];
+        this.recordingStartTimestamp = 0;
+        this.recordingStatus = "stopped";
       }
-      
-    }
-
-    try {
-      if (withDownload) {
-        await downloadDataAsZip(datasetExport, `causality_data`, dayjs.unix(this.recordingStartTimestamp));
-      } 
-      
-    } catch (e) {
-      console.log(e);
-    } finally {
-      // empty series
-      this.ppgSeries = [];
-      this.rawBrainwaveSeries = {};
-      this.rawBrainwavesParsed = [];
-      this.eventSeries = [];
-      this.accelerometerSeries = [];
-      this.recordingStartTimestamp = 0;
-      this.recordingStatus = "stopped";
     }
 
     return datasetExport;
