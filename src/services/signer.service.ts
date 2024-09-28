@@ -1,7 +1,6 @@
 import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import sha256 from "fast-sha256";
-import { base } from '@wagmi/core/chains'
 
 const easContractAddress = "0x4200000000000000000000000000000000000021"; 
 
@@ -30,6 +29,42 @@ export async function getFileHash(file: File): Promise<string> {
   });
 }
 
+async function switchToBaseMainnet() {
+  if (typeof (window as any).ethereum !== 'undefined') {
+    try {
+      // Request current network information
+      const chainId = await (window as any).ethereum.request({ method: 'eth_chainId' });
+
+      // Check if the user is already on Base Mainnet (chainId 8453 or 0x2105)
+      if (chainId !== '0x2105') {
+        // If not on Base Mainnet, request to add the Base Mainnet network
+        await (window as any).ethereum.request({
+          method: "wallet_addEthereumChain",
+          params: [{
+            chainId: "0x2105", // Base Mainnet chain ID in hex
+            rpcUrls: ["https://mainnet.base.org"], // Base Mainnet RPC URL
+            chainName: "Base Mainnet", // Name of the network
+            nativeCurrency: {
+              name: "Base", // Base's native currency name
+              symbol: "ETH", // Base uses ETH as its native currency symbol
+              decimals: 18 // Decimals for ETH
+            },
+            blockExplorerUrls: ["https://basescan.org/"] // Base Mainnet block explorer
+          }]
+        });
+        console.log("Base Mainnet added successfully!");
+      } else {
+        console.log("You are already connected to Base Mainnet.");
+      }
+    } catch (error) {
+      console.error("Error adding Base Mainnet:", error);
+    }
+  } else {
+    console.error("MetaMask is not installed.");
+  }
+}
+
+
 export const signData = async (
   name: string,
   startTimestamp: number,
@@ -47,7 +82,8 @@ export const signData = async (
     provider = ethers.getDefaultProvider(); 
   } else {
     console.log("Using Metamask for Base network");
-    provider = new ethers.BrowserProvider((window as any).ethereum, base);
+    await switchToBaseMainnet()
+    provider = new ethers.BrowserProvider((window as any).ethereum);
     signer = await provider.getSigner();
   }
 
