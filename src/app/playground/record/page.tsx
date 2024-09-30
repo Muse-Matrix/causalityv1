@@ -8,6 +8,7 @@ import { useContext, useState } from "react";
 
 const RecordArea: React.FC = () => {
   const museContext = useContext(MuseContext);
+  console.log(museContext?.museClient?.connectionStatus,museContext?.museClient?.deviceInfo());
   const [phase, setPhase] = useState("pre-recording");
 
   console.log(
