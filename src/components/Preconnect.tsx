@@ -5,6 +5,8 @@ import { useContext } from "react";
 
 export const Preconnect = () => {
   const museContext = useContext(MuseContext);
+  console.log(museContext?.museClient?.connectionStatus,museContext?.museClient?.deviceInfo());
+  
   
   return (
     <div>
@@ -12,7 +14,7 @@ export const Preconnect = () => {
         This is a playground for capturing EEG data with your Muse device.
       </p>
 
-      {!museContext?.museClient && (
+      {!museContext?.museClient && !museContext?.museClient?.connectionStatus &&(
         <button
           className="bg-white text-lightBlue px-6 py-3 font-bold rounded-md hover:bg-opacity-90"
           onClick={async () => {
