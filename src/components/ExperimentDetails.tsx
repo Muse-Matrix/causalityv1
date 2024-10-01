@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ImagePreviewOverlay from "./ImagePreviewer";
 
 interface ExperimentDetailsProps {
@@ -14,9 +14,10 @@ interface ExperimentDetailsProps {
   onBack: () => void;
   onDelete: () => void;
   onEdit: () => void;
-  isPreviewing: boolean,
-  handleRecordData: () => void
-  closePreview: () => void
+  isPreviewing: boolean;
+  handleRecordData: () => void;
+  closePreview: () => void;
+  saveAndDownloadRecordedData: () => Promise<void>
 }
 
 const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
@@ -26,14 +27,16 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
   onEdit,
   isPreviewing,
   handleRecordData,
-  closePreview
+  closePreview,
+  saveAndDownloadRecordedData
 }) => {
-  
-
   return (
     <div className="text-white rounded-lg shadow-lg space-y-10 font-mono">
       <div className="flex items-center space-x-4 mb-8">
-        <button onClick={onBack} className="text-md text-gray-300 hover:underline">
+        <button
+          onClick={onBack}
+          className="text-md text-gray-300 hover:underline"
+        >
           ← Back
         </button>
       </div>
@@ -47,7 +50,7 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
           <div className="flex justify-between">
             <span>Images ({experiment.images.length})</span>
             <div className="flex space-x-2">
-              {experiment.images.map((url, index) => (
+              {experiment.images.map((url, index) =>
                 url ? (
                   <img
                     key={index}
@@ -58,7 +61,7 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
                 ) : (
                   <div key={index} className="w-8 h-8 rounded bg-gray-800" />
                 )
-              ))}
+              )}
             </div>
           </div>
 
@@ -78,12 +81,12 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-around space-y-4 items-start sm:items-center py-4">
+        <div className="flex flex-col sm:flex-row justify-around space-y-4 items-start sm:items-center py-2">
           <button
             className="bg-buttonBlue text-white py-2 rounded px-12"
-            onClick={handleRecordData}
+            onClick={!experiment.isRecorded ? handleRecordData: saveAndDownloadRecordedData}
           >
-            RECORD DATA
+            {!experiment.isRecorded ? 'RECORD DATA' : 'ANALYZE RECORD'}
           </button>
           <button
             className="bg-transparent text-white py-2 rounded px-12 border-1"
@@ -102,10 +105,11 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
 
       {isPreviewing && (
         <ImagePreviewOverlay
+          experimentId={experiment.id}
           images={experiment.images}
           duration={experiment.duration}
-          interval={experiment.interval} 
-          onClose={closePreview} 
+          interval={experiment.interval}
+          onClose={closePreview}
         />
       )}
     </div>

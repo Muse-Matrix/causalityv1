@@ -10,129 +10,20 @@ import {
   MuseEEGService,
 } from "@/services/integrations/muse.service";
 import { useRouter } from "next/navigation";
+import { useExperiment } from "@/hooks/playground.context";
 const Recorder = () => {
-  const [sandboxData, setSandboxData] = useState("");
   const museContext = useContext(MuseContext);
-  const [museEEGService, setMuseEEGService] = useState<MuseEEGService>();
-  const [isMuseDataRecorded, setIsMuseDataRecorded] = useState(false);
-  const router = useRouter()
-  //@typescript-eslint/no-non-null-asserted-optional-chain
-  useEffect(() => {
-    if (museContext?.museClient && museContext?.museService) {
-      setMuseEEGService(museContext?.museService!);
-    }
-  }, [museContext?.museClient]);
+  const {
+    museBrainwaves,
+    isMuseRecording,
+    isMuseDataRecorded,
+    startMuseRecording,
+    stopMuseRecording,
+    saveAndDownloadRecordedData,
+    discardMuseRecording,
+  } = useExperiment();
 
-  async function startMuseRecording() {
-    if (museEEGService) {
-      setIsMuseRecording(true);
-      await museEEGService.startRecording({
-        id: 3,
-        name: "Akhil",
-        description: "new experiments",
-      });
-    }
-  }
-
-  async function stopMuseRecording() {
-    if (museEEGService) {
-      setIsMuseRecording(false);
-      setIsMuseDataRecorded(true);
-      await museEEGService.stopRecording();
-    }
-  }
-
-  async function saveAndDowloadRecordedData() {
-    if(museEEGService){
-      setIsMuseDataRecorded(false);
-      setIsMuseRecording(false);
-      await museEEGService.dowloadOrSaveRecordedData(false, true);
-    }
-  }
-
-  async function discardMuseRecording() {
-    if (museEEGService) {
-      setIsMuseRecording(false);
-      setIsMuseDataRecorded(false);
-      await museEEGService.stopRecording();
-    }
-  }
-
-
-
-  if (typeof window !== "undefined") {
-    window.addEventListener("message", (event) => {
-      // IMPORTANT: Check the origin of the data!
-      // You should probably not use '*', but restrict it to certain domains:
-      if (event.origin.startsWith("https://localhost:")) {
-        // console.log("event", event);
-        if (typeof event.data === "string") {
-          return;
-        }
-
-        try {
-          if (typeof event.data === "object") {
-            if (event.data["trials"]) {
-              // jspsych events contain trials key...
-              setSandboxData(event.data);
-            } else {
-              // console.log("rejected non experiment data");
-            }
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    });
-  }
-
-  useEffect(() => {
-    if (sandboxData !== "") {
-      (async () => {
-        await downloadSandboxData(sandboxData, "test", dayjs().unix());
-      })();
-    }
-  }, [sandboxData]);
-
-  // download the data
-  async function downloadSandboxData(
-    sandboxData: any,
-    dataName: string,
-    fileTimestamp: number
-  ) {
-    const fileName = `${dataName}_${fileTimestamp}.json`;
-
-    const hiddenElement = document.createElement("a");
-    hiddenElement.href =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(sandboxData));
-    hiddenElement.target = "_blank";
-    hiddenElement.download = fileName;
-    hiddenElement.click();
-  }
-
-  const [museBrainwaves, setMuseBrainwaves] =
-    useState<CausalityNetworkParsedEEG[]>();
-  const [isMuseRecording, setIsMuseRecording] = useState(false);
-  useEffect(() => {
-    // Subscribe to updates
-    if (!isMuseRecording) return;
-    if (!museContext?.museService) return;
-    if (museContext?.museService?.onUpdate) {
-      const unsubscribe = museContext?.museService?.onUpdate((data) => {
-        // Handle the new data
-        const last1000Brainwaves = data.slice(-1000);
-        setMuseBrainwaves(last1000Brainwaves);
-      });
-
-      // Unsubscribe on component unmount or when dependencies change
-      return () => {
-        if (unsubscribe) {
-          unsubscribe();
-        }
-      };
-    }
-  }, [isMuseRecording, museContext?.museService]);
+  const router = useRouter();
 
   return (
     museContext &&
@@ -281,7 +172,7 @@ const Recorder = () => {
                 <button
                   className="bg-buttonBlue text-white px-6 py-2 font-semibold rounded-md hover:bg-opacity-90 mx-2"
                   onClick={() => {
-                    saveAndDowloadRecordedData();
+                    saveAndDownloadRecordedData();
                   }}
                 >
                   SAVE RECORDING

@@ -7,10 +7,10 @@ interface Props {
   experiment: Experiment;
   onClick: () => void;
   handleRecordData: () => void
+  saveAndDownloadRecordedData: () => Promise<void>
 }
 
-const ExperimentItem: React.FC<Props> = ({ experiment, onClick , handleRecordData}) => {
-  const handleAnalyze = () => console.log(`Analyzing data for ${experiment.experimentName}`);
+const ExperimentItem: React.FC<Props> = ({ experiment, onClick , handleRecordData, saveAndDownloadRecordedData}) => {
   const handleDelete = () => console.log(`Deleting ${experiment.experimentName}`);
 
   return (
@@ -22,7 +22,7 @@ const ExperimentItem: React.FC<Props> = ({ experiment, onClick , handleRecordDat
         {!experiment.isRecorded ? (
           <Button onClick={handleRecordData}>Record Data</Button>
         ) : (
-          <Button onClick={handleAnalyze}>Analyze Data</Button>
+          <Button onClick={saveAndDownloadRecordedData}>Analyze Data</Button>
         )}
         <Edit className="h-5 w-5 text-gray-300 cursor-pointer" onClick={() => console.log("Edit")} />
         <Trash className="h-5 w-5 text-red-500 cursor-pointer" onClick={handleDelete} />

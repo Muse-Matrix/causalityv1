@@ -4,9 +4,12 @@ import { MuseContextProvider } from "@/hooks/muse.context";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ExperimentProvider } from "@/hooks/experiment.context";
+import { ExperimentPlaygroundProvider } from "@/hooks/playground.context";
 
 const PlayGroundLayout = ({ children }: { children: React.ReactNode }) => {
-  const [selectedOperation, setSelectedOperation] = useState<string | null>(null); 
+  const [selectedOperation, setSelectedOperation] = useState<string | null>(
+    null
+  );
   const pathname = usePathname();
 
   useEffect(() => {
@@ -26,13 +29,15 @@ const PlayGroundLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <MuseContextProvider>
-        <ExperimentProvider>
-          <OpreationalButton
-            selectedOperation={selectedOperation}
-            setSelectedOperation={setSelectedOperation}
-          />
-          {children}
-        </ExperimentProvider>
+        <ExperimentPlaygroundProvider>
+          <ExperimentProvider>
+            <OpreationalButton
+              selectedOperation={selectedOperation}
+              setSelectedOperation={setSelectedOperation}
+            />
+            {children}
+          </ExperimentProvider>
+        </ExperimentPlaygroundProvider>
       </MuseContextProvider>
     </>
   );

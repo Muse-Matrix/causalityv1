@@ -18,7 +18,7 @@ interface ExperimentContextType {
 
 const ExperimentContext = createContext<ExperimentContextType | undefined>(undefined);
 
-export const ExperimentProvider = ({ children }: { children: ReactNode }) => {
+export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode }) => {
   const [sandboxData, setSandboxData] = useState("");
   const [museEEGService, setMuseEEGService] = useState<MuseEEGService>();
   const [isMuseDataRecorded, setIsMuseDataRecorded] = useState(false);
@@ -29,6 +29,9 @@ export const ExperimentProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (museContext?.museClient && museContext?.museService) {
       setMuseEEGService(museContext?.museService!);
+    }else{
+        setIsMuseDataRecorded(false);
+        setIsMuseRecording(false);
     }
   }, [museContext?.museClient]);
 
@@ -105,7 +108,7 @@ export const ExperimentProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!isMuseRecording || !museContext?.museService) return;
-    const unsubscribe = museContext.museService.onUpdate((data) => {
+    const unsubscribe = museContext.museService.onUpdate && museContext.museService.onUpdate((data) => {
       const last1000Brainwaves = data.slice(-1000);
       setMuseBrainwaves(last1000Brainwaves);
     });
