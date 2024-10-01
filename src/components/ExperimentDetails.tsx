@@ -103,7 +103,7 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
         </div>
       </div>
 
-      {isPreviewing && (
+      {isPreviewing && experiment.images.length && (
         <ImagePreviewOverlay
           experimentId={experiment.id}
           images={experiment.images}
