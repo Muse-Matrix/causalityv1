@@ -1,11 +1,11 @@
-import { downloadFromIpfs } from "@/services/storage.service";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import ImagePreviewOverlay from "./ImagePreviewer";
 
 interface ExperimentDetailsProps {
   experiment: {
     id: number;
     experimentName: string;
-    images: { cid: string }[]; 
+    images: string[];
     duration: number;
     interval: number;
     baselineMeasurement: boolean;
@@ -14,6 +14,10 @@ interface ExperimentDetailsProps {
   onBack: () => void;
   onDelete: () => void;
   onEdit: () => void;
+  isPreviewing: boolean;
+  handleRecordData: () => void;
+  closePreview: () => void;
+  saveAndDownloadRecordedData: () => Promise<void>
 }
 
 const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
@@ -21,36 +25,18 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
   onBack,
   onDelete,
   onEdit,
+  isPreviewing,
+  handleRecordData,
+  closePreview,
+  saveAndDownloadRecordedData
 }) => {
-  const [imageUrls, setImageUrls] = useState<(string | undefined)[]>([]);
-
-  // Function to download all files for the experiment
-  const downloadImages = async (cids: any[]) => {
-    try {
-      const urls = await Promise.all(
-        cids.map((cid) => {
-            return downloadFromIpfs(cid); 
-        })
-      );
-      setImageUrls(urls);
-    } catch (error) {
-      console.error("Error downloading images", error);
-    }
-  };
-  
-
-  // UseEffect to download images when the component loads
-  useEffect(() => {
-    if (experiment.images.length > 0) {
-      const cids = experiment.images.map((image) => image); // Extract CIDs from the images
-      downloadImages(cids);
-    }
-  }, [experiment.images]);
-
   return (
     <div className="text-white rounded-lg shadow-lg space-y-10 font-mono">
       <div className="flex items-center space-x-4 mb-8">
-        <button onClick={onBack} className="text-md text-gray-300 hover:underline">
+        <button
+          onClick={onBack}
+          className="text-md text-gray-300 hover:underline"
+        >
           ← Back
         </button>
       </div>
@@ -64,7 +50,7 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
           <div className="flex justify-between">
             <span>Images ({experiment.images.length})</span>
             <div className="flex space-x-2">
-              {imageUrls.map((url, index) => (
+              {experiment.images.map((url, index) =>
                 url ? (
                   <img
                     key={index}
@@ -75,7 +61,7 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
                 ) : (
                   <div key={index} className="w-8 h-8 rounded bg-gray-800" />
                 )
-              ))}
+              )}
             </div>
           </div>
 
@@ -95,12 +81,12 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-around space-y-4 items-start sm:items-center py-4">
+        <div className="flex flex-col sm:flex-row justify-around space-y-4 items-start sm:items-center py-2">
           <button
             className="bg-buttonBlue text-white py-2 rounded px-12"
-            onClick={() => console.log("Recording data...")}
+            onClick={!experiment.isRecorded ? handleRecordData: saveAndDownloadRecordedData}
           >
-            RECORD DATA
+            {!experiment.isRecorded ? 'RECORD DATA' : 'ANALYZE RECORD'}
           </button>
           <button
             className="bg-transparent text-white py-2 rounded px-12 border-1"
@@ -116,6 +102,16 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
           </button>
         </div>
       </div>
+
+      {isPreviewing && (
+        <ImagePreviewOverlay
+          experimentId={experiment.id}
+          images={experiment.images}
+          duration={experiment.duration}
+          interval={experiment.interval}
+          onClose={closePreview}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { useExperimentContext } from "@/hooks/experiment.context";
-import { uploadToIpfs } from "@/services/storage.service";
+import { uploadToCloudinary } from "@/services/storage.service";
 import { useState } from "react";
 
 export default function ExperimentModal({
@@ -13,11 +13,10 @@ export default function ExperimentModal({
   const [duration, setDuration] = useState(10); 
   const [interval, setInterval] = useState(5); 
   const [baselineMeasurement, setBaselineMeasurement] = useState(true);
-  const [uploadedCids, setUploadedCids] = useState<string[]>([]);
 
   const uploadImage = async(file: File)=>{
-    const cid = await uploadToIpfs(file);
-    return cid;
+    const url = await uploadToCloudinary(file);
+    return url;
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,17 +25,18 @@ export default function ExperimentModal({
     }
   };
 
-  const handleSaveExperiment = async() => {
-    const cids = await Promise.all(images.map(file => uploadImage(file)));
+  const handleSaveExperiment = async(event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const url  = await Promise.all(images.map(file => uploadImage(file)));
     const newExperiment = {
       experimentName,
-      images: cids,
+      images: url,
       duration,
       interval,
       baselineMeasurement,
       isRecorded: false
     };
-console.log(newExperiment);
+    console.log(newExperiment);
 
     addExperiment({id: experiments.length+1, ...newExperiment}); 
     setExperimentName(''); 
@@ -44,6 +44,7 @@ console.log(newExperiment);
     setDuration(10);
     setInterval(5);
     setBaselineMeasurement(true);
+    toggleModal()
     // alert("Experiment Saved!")
   };
 
