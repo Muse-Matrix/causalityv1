@@ -48,6 +48,20 @@ export const ExperimentProvider: React.FC<{ children: ReactNode }> = ({ children
     localStorage.setItem('experiments', JSON.stringify(updatedExperiments));
   };
 
+  const deleteExperiment = (id: number) => {
+    setExperiments((prevExperiments) =>
+      prevExperiments.filter((exp) => exp.id !== id)
+    );
+  };
+  
+  const updateExperiment = (updatedExperiment: Experiment) => {
+    setExperiments((prevExperiments) =>
+      prevExperiments.map((exp) =>
+        exp.id === updatedExperiment.id ? updatedExperiment : exp
+      )
+    );
+  };
+
   // Load experiments from localStorage on initial render
   useEffect(() => {
     const storedExperiments = localStorage.getItem('experiments');

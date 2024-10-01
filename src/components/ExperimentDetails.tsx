@@ -1,11 +1,11 @@
-import { downloadFromIpfs } from "@/services/storage.service";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import ImagePreviewOverlay from "./ImagePreviewer";
 
 interface ExperimentDetailsProps {
   experiment: {
     id: number;
     experimentName: string;
-    images: { cid: string }[]; 
+    images: string[];
     duration: number;
     interval: number;
     baselineMeasurement: boolean;
@@ -22,30 +22,15 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
   onDelete,
   onEdit,
 }) => {
-  const [imageUrls, setImageUrls] = useState<(string | undefined)[]>([]);
+  const [isPreviewing, setIsPreviewing] = useState<boolean>(false);
 
-  // Function to download all files for the experiment
-  const downloadImages = async (cids: any[]) => {
-    try {
-      const urls = await Promise.all(
-        cids.map((cid) => {
-            return downloadFromIpfs(cid); 
-        })
-      );
-      setImageUrls(urls);
-    } catch (error) {
-      console.error("Error downloading images", error);
-    }
+  const handleRecordData = () => {
+    setIsPreviewing(true); // Start the image preview
   };
-  
 
-  // UseEffect to download images when the component loads
-  useEffect(() => {
-    if (experiment.images.length > 0) {
-      const cids = experiment.images.map((image) => image); // Extract CIDs from the images
-      downloadImages(cids);
-    }
-  }, [experiment.images]);
+  const closePreview = () => {
+    setIsPreviewing(false); // Close the preview when done
+  };
 
   return (
     <div className="text-white rounded-lg shadow-lg space-y-10 font-mono">
@@ -64,7 +49,7 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
           <div className="flex justify-between">
             <span>Images ({experiment.images.length})</span>
             <div className="flex space-x-2">
-              {imageUrls.map((url, index) => (
+              {experiment.images.map((url, index) => (
                 url ? (
                   <img
                     key={index}
@@ -98,7 +83,7 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
         <div className="flex flex-col sm:flex-row justify-around space-y-4 items-start sm:items-center py-4">
           <button
             className="bg-buttonBlue text-white py-2 rounded px-12"
-            onClick={() => console.log("Recording data...")}
+            onClick={handleRecordData}
           >
             RECORD DATA
           </button>
@@ -116,6 +101,16 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Full screen image preview overlay */}
+      {isPreviewing && (
+        <ImagePreviewOverlay
+          images={experiment.images}
+          duration={experiment.duration}
+          interval={experiment.interval} // Pass interval here
+          onClose={closePreview} // Close the overlay when done
+        />
+      )}
     </div>
   );
 };

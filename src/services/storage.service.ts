@@ -185,3 +185,44 @@ export async function downloadFromIpfs(cid: string) {
   }
 }
 
+export async function uploadToCloudinary(file: File): Promise<string | null> {
+  const data = new FormData();
+  data.append("file", file);
+  data.append("upload_preset", "c023wt96"); // Your upload preset
+  data.append("cloud_name", "ddbsgfcsx"); // Your cloud name
+  console.log("uploading file");
+  
+  try {
+    const response = await fetch("https://api.cloudinary.com/v1_1/ddbsgfcsx/image/upload", {
+      method: "POST",
+      body: data,
+    });
+
+    const result = await response.json();
+    console.log(result);
+    
+    return result.secure_url; // Return the URL for use in <img src="">
+  } catch (error) {
+    console.error("Error during upload:", error);
+    return null;
+  }
+}
+
+
+export async function getFileFromCloudinary(url: string): Promise<Blob | null> {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Failed to retrieve file from Cloudinary");
+    }
+
+    // Get the file as a Blob
+    const fileBlob = await response.blob();
+    return fileBlob;
+  } catch (error) {
+    console.error("Error fetching file from Cloudinary:", error);
+    return null;
+  }
+}
+

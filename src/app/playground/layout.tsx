@@ -6,21 +6,26 @@ import { usePathname, useRouter } from "next/navigation";
 import { ExperimentProvider } from "@/hooks/experiment.context";
 
 const PlayGroundLayout = ({ children }: { children: React.ReactNode }) => {
-  const [selectedOperation, setSelectedOperation] = useState("Record");
+  const [selectedOperation, setSelectedOperation] = useState<string | null>(null); // Start with null to prevent SSR mismatch
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
+    // Only update selectedOperation after client-side hydration
     if (pathname === "/playground/experiments") {
       setSelectedOperation("Experiments");
-    }
-    if (pathname === "/playground/record") {
+    } else if (pathname === "/playground/record") {
       setSelectedOperation("Record");
     }
-  }, [selectedOperation, router, pathname]);
+  }, [pathname]);
+
+  // If selectedOperation is null, skip rendering OpreationalButton to avoid hydration mismatch
+  if (!selectedOperation) {
+    return null; // Or a loading state
+  }
 
   return (
-    <div>
+    <>
       <MuseContextProvider>
         <ExperimentProvider>
           <OpreationalButton
@@ -30,7 +35,7 @@ const PlayGroundLayout = ({ children }: { children: React.ReactNode }) => {
           {children}
         </ExperimentProvider>
       </MuseContextProvider>
-    </div>
+    </>
   );
 };
 
