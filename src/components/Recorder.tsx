@@ -46,7 +46,6 @@ const Recorder = () => {
     if(museEEGService){
       setIsMuseDataRecorded(false);
       setIsMuseRecording(false);
-      router.push('/playground/experiments')
       await museEEGService.dowloadOrSaveRecordedData(false, true);
     }
   }

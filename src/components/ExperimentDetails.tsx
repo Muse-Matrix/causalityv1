@@ -14,6 +14,9 @@ interface ExperimentDetailsProps {
   onBack: () => void;
   onDelete: () => void;
   onEdit: () => void;
+  isPreviewing: boolean,
+  handleRecordData: () => void
+  closePreview: () => void
 }
 
 const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
@@ -21,16 +24,11 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
   onBack,
   onDelete,
   onEdit,
+  isPreviewing,
+  handleRecordData,
+  closePreview
 }) => {
-  const [isPreviewing, setIsPreviewing] = useState<boolean>(false);
-
-  const handleRecordData = () => {
-    setIsPreviewing(true); // Start the image preview
-  };
-
-  const closePreview = () => {
-    setIsPreviewing(false); // Close the preview when done
-  };
+  
 
   return (
     <div className="text-white rounded-lg shadow-lg space-y-10 font-mono">
@@ -102,13 +100,12 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
         </div>
       </div>
 
-      {/* Full screen image preview overlay */}
       {isPreviewing && (
         <ImagePreviewOverlay
           images={experiment.images}
           duration={experiment.duration}
-          interval={experiment.interval} // Pass interval here
-          onClose={closePreview} // Close the overlay when done
+          interval={experiment.interval} 
+          onClose={closePreview} 
         />
       )}
     </div>

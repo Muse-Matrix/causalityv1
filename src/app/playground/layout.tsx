@@ -6,8 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ExperimentProvider } from "@/hooks/experiment.context";
 
 const PlayGroundLayout = ({ children }: { children: React.ReactNode }) => {
-  const [selectedOperation, setSelectedOperation] = useState<string | null>(null); // Start with null to prevent SSR mismatch
-  const router = useRouter();
+  const [selectedOperation, setSelectedOperation] = useState<string | null>(null); 
   const pathname = usePathname();
 
   useEffect(() => {

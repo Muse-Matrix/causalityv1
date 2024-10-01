@@ -15,7 +15,7 @@ export interface Experiment {
 interface ExperimentContextType {
   experiments: Experiment[];
   addExperiment: (newExperiment: Experiment) => void;
-  removeExperiment: (experimentName: string) => void;
+  removeExperiment: (id: number) => void;
 }
 
 // Create the context with default values
@@ -42,16 +42,10 @@ export const ExperimentProvider: React.FC<{ children: ReactNode }> = ({ children
   };
 
   // Function to remove an experiment
-  const removeExperiment = (experimentName: string) => {
-    const updatedExperiments = experiments.filter(experiment => experiment.experimentName !== experimentName);
+  const removeExperiment = (id: number) => {
+    const updatedExperiments = experiments.filter(experiment => experiment.id !== id);
     setExperiments(updatedExperiments);
     localStorage.setItem('experiments', JSON.stringify(updatedExperiments));
-  };
-
-  const deleteExperiment = (id: number) => {
-    setExperiments((prevExperiments) =>
-      prevExperiments.filter((exp) => exp.id !== id)
-    );
   };
   
   const updateExperiment = (updatedExperiment: Experiment) => {

@@ -44,6 +44,7 @@ export default function ExperimentModal({
     setDuration(10);
     setInterval(5);
     setBaselineMeasurement(true);
+    toggleModal()
     // alert("Experiment Saved!")
   };
 

@@ -4,10 +4,19 @@ import { useExperimentContext } from "@/hooks/experiment.context";
 import ExperimentDetails from "./ExperimentDetails";
 
 const ExperimentList: React.FC = () => {
-  const { experiments } = useExperimentContext();
+  const { experiments, removeExperiment } = useExperimentContext();
   const [selectedExperiment, setSelectedExperiment] = useState<number | null>(
     null
   );
+  const [isPreviewing, setIsPreviewing] = useState<boolean>(false);
+
+  const handleRecordData = () => {
+    setIsPreviewing(true);
+  };
+
+  const closePreview = () => {
+    setIsPreviewing(false); 
+  };
 
   const handleSelectExperiment = (id: number) => setSelectedExperiment(id);
   const handleBack = () => setSelectedExperiment(null);
@@ -33,6 +42,7 @@ const ExperimentList: React.FC = () => {
                   key={experiment.id}
                   experiment={experiment}
                   onClick={() => handleSelectExperiment(experiment.id)}
+                  handleRecordData={handleRecordData}
                 />
               ))
             ) : (
@@ -47,6 +57,9 @@ const ExperimentList: React.FC = () => {
           onBack={handleBack}
           onDelete={() => handleDelete(selectedExperiment)}
           onEdit={() => console.log("Edit experiment")}
+          isPreviewing={isPreviewing}
+          handleRecordData={handleRecordData}
+          closePreview={closePreview}
         />
       )}
     </div>

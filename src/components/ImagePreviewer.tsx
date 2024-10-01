@@ -51,12 +51,12 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
       }`}
       style={{ width: "100vw", height: "100vh" }}
     >
-      <button
+      <div
         onClick={onClose}
-        className="absolute top-4 right-4 text-white text-lg font-bold bg-red-500 rounded px-4 py-2 hover:bg-red-600"
+        className="absolute top-4 right-4 text-white text-lg font-bold rounded px-4 py-2 hover:bg-red-600"
       >
-        Close
-      </button>
+        X
+      </div>
       {message ? (
         <p className="text-white text-xl font-bold">{message}</p>
       ) : (
