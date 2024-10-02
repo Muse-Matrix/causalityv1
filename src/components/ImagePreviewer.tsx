@@ -52,23 +52,13 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
       setMessage("");
     } else if (currentIndex < images.length) {
       timeout = setTimeout(() => {
-        setMessage("Changing image...");
-        setTimeout(() => {
-          setMessage("");
-          setCurrentIndex(currentIndex + 1);
-        }, interval * 1000);
-      }, (duration + interval) * 1000);
+        setCurrentIndex(currentIndex + 1);
+      }, (duration) * 1000);
     } else {
-      // Once all images are done, stop the recording, update experiment, and close the preview
-      if(isMuseRecording && museBrainwaves){
-        stopMuseRecording();
-        setIsPreviewing(false);
-      }
-        
 
       const experiment = experiments.find((exp) => exp.id === experimentId);
       if (experiment) {
-        const updatedExperiment = { ...experiment, isRecorded: true };
+        const updatedExperiment = { ...experiment, isRecorded: false };
         updateExperiment(updatedExperiment); 
       }
       onClose();
