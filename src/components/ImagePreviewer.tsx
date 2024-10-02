@@ -20,12 +20,11 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
   onClose,
   experimentId,
 }) => {
-  const [currentIndex, setCurrentIndex] = useState<number>(-1); // -1 to show starting message first
+  const [currentIndex, setCurrentIndex] = useState<number>(-1); 
   const [message, setMessage] = useState<string>("Starting image preview...");
   const [isPreviewing, setIsPreviewing] = useState<boolean>(true);
   const [countdown, setCountdown] = useState<number>(5); 
-  const [showBaseline, setShowBaseline] = useState<boolean>(false); // For baseline screen
-  const router = useRouter();
+  const [showBaseline, setShowBaseline] = useState<boolean>(false); 
   const { experiments, updateExperiment } = useExperimentContext(); 
   const {
     startMuseRecording,
@@ -78,7 +77,7 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
 
   return (
     <div
-      className={`fixed min-w-screen inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 transition-opacity duration-300 p-4 ${
+      className={`fixed min-w-screen inset-0 bg-black flex items-center justify-center z-50 transition-opacity duration-300 p-4 ${
         isPreviewing ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
@@ -96,7 +95,7 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
           {countdown}</p>
           </div>
       ) : showBaseline ? ( // Show baseline screen if true
-        <div className="flex items-center justify-center w-full h-full border-white border-2">
+        <div className="flex items-center justify-center w-[80%] h-[80%] border-white border-2">
           <div className="text-white text-4xl font-bold">+</div> {/* Baseline screen with fixation cross */}
         </div>
       ) : message ? (

@@ -4,11 +4,7 @@
 import { useState, useEffect, useContext } from "react";
 import dayjs from "dayjs";
 import { MuseContext } from "@/hooks/muse.context";
-import { SignalViewer } from "./SignalViewer"; // import { useSession } from "next-auth/react";
-import {
-  CausalityNetworkParsedEEG,
-  MuseEEGService,
-} from "@/services/integrations/muse.service";
+import { SignalViewer } from "./SignalViewer";
 import { useRouter } from "next/navigation";
 import { useExperimentPlayground } from "@/hooks/playground.context";
 import { useExperimentContext } from "@/hooks/experiment.context";
