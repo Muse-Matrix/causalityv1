@@ -19,7 +19,11 @@ const Recorder = () => {
     saveAndDownloadRecordedData,
     discardMuseRecording,
   } = useExperimentPlayground();
-  const { currentExperiment, setCurrExperiment } = useExperimentContext();
+  
+  const { 
+    currentExperiment, 
+    setCurrExperiment 
+  } = useExperimentContext();
 
   const router = useRouter();
 

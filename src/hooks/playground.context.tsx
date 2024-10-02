@@ -1,25 +1,23 @@
 "use client"
 import React, { createContext, useState, useEffect, useContext, ReactNode } from "react";
-import dayjs from "dayjs";
 import { MuseContext } from "@/hooks/muse.context";
 import { CausalityNetworkParsedEEG, MuseEEGService } from "@/services/integrations/muse.service";
+import { Experiment } from "./experiment.context";
 
 interface ExperimentContextType {
   museBrainwaves: CausalityNetworkParsedEEG[] | undefined;
   isMuseRecording: boolean;
   isMuseDataRecorded: boolean;
-  sandboxData: any;
   startMuseRecording: () => Promise<void>;
   stopMuseRecording: () => Promise<void>;
   saveAndDownloadRecordedData: () => Promise<void>;
   discardMuseRecording: () => Promise<void>;
-  downloadSandboxData: (sandboxData: any, dataName: string, fileTimestamp: number) => Promise<void>;
+  updateMuseRecordingEvent:(experimentId: number, imageName: string, experimentName: string) => void;
 }
 
 const ExperimentContext = createContext<ExperimentContextType | undefined>(undefined);
 
 export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode }) => {
-  const [sandboxData, setSandboxData] = useState("");
   const [museEEGService, setMuseEEGService] = useState<MuseEEGService>();
   const [isMuseDataRecorded, setIsMuseDataRecorded] = useState(false);
   const [museBrainwaves, setMuseBrainwaves] = useState<CausalityNetworkParsedEEG[]>();
@@ -35,13 +33,13 @@ export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode
     }
   }, [museContext?.museClient]);
 
-  async function startMuseRecording() {
+  async function startMuseRecording(experiment?: Experiment) {
     if (museEEGService) {
       setIsMuseRecording(true);
       await museEEGService.startRecording({
-        id: 3,
-        name: "Akhil",
-        description: "new experiments",
+        id: experiment?.id ?? 1,
+        name:experiment?.experimentName ?? "Open Ended Recording",
+        description: `Recording brain waves for experiment: ${experiment?.experimentName}` ?? "Recording brain waves for open ended recording",
       });
     }
   }
@@ -70,41 +68,17 @@ export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode
     }
   }
 
-  async function downloadSandboxData(
-    sandboxData: any,
-    dataName: string,
-    fileTimestamp: number
-  ) {
-    const fileName = `${dataName}_${fileTimestamp}.json`;
-
-    const hiddenElement = document.createElement("a");
-    hiddenElement.href =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(sandboxData));
-    hiddenElement.target = "_blank";
-    hiddenElement.download = fileName;
-    hiddenElement.click();
+  function updateMuseRecordingEvent(experimentId: number, imageName: string, experimentName: string) {
+    const recordingData = {
+      experimentId,
+      imageName,
+      experimentName,
+      timestamp: new Date().toISOString(),
+    };
+    
+    console.log('Updated recording event:', recordingData);
   }
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.addEventListener("message", (event) => {
-        if (event.origin.startsWith("https://localhost:")) {
-          if (typeof event.data === "object" && event.data["trials"]) {
-            setSandboxData(event.data);
-          }
-        }
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (sandboxData !== "") {
-      (async () => {
-        await downloadSandboxData(sandboxData, "test", dayjs().unix());
-      })();
-    }
-  }, [sandboxData]);
 
   useEffect(() => {
     if (!isMuseRecording || !museContext?.museService) return;
@@ -126,12 +100,11 @@ export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode
         museBrainwaves,
         isMuseRecording,
         isMuseDataRecorded,
-        sandboxData,
         startMuseRecording,
         stopMuseRecording,
         saveAndDownloadRecordedData,
         discardMuseRecording,
-        downloadSandboxData,
+        updateMuseRecordingEvent
       }}
     >
       {children}

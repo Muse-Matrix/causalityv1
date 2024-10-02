@@ -29,6 +29,7 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
   const {
     startMuseRecording,
     stopMuseRecording,
+    updateMuseRecordingEvent
   } = useExperimentPlayground();
 
   useEffect(() => {
@@ -52,15 +53,30 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
     } else if (currentIndex < images.length) {
       if (baseline && interval > 0) {
         setShowBaseline(true);
+        updateMuseRecordingEvent(
+          experimentId,
+          "Baseline",  
+          "Baseline",
+        );
         timeout = setTimeout(() => {
           setShowBaseline(false); 
           timeout = setTimeout(() => {
             setCurrentIndex(currentIndex + 1);
+            updateMuseRecordingEvent(
+              experimentId,
+              images[currentIndex], 
+              `Experiment Image ${currentIndex + 1}`,
+            );
           }, duration * 1000); 
         }, interval * 1000); 
       } else {
         timeout = setTimeout(() => {
           setCurrentIndex(currentIndex + 1);
+          updateMuseRecordingEvent(
+            experimentId,
+            images[currentIndex],  
+            `Experiment Image ${currentIndex + 1}`,
+          );
         }, (duration) * 1000); 
       }
     } else {

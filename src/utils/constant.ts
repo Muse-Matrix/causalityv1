@@ -29,7 +29,7 @@ export const navItems = [
   export interface EventData {
     startTimestamp: number;
     duration: number;
-    data: string;
+    data: any;
   }
   
   export interface PowerByBand {

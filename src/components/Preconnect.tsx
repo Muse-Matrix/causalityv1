@@ -17,7 +17,7 @@ export const Preconnect = () => {
         <button
           className="bg-white text-lightBlue px-6 py-3 font-bold rounded-md hover:bg-opacity-90"
           onClick={async () => {
-            museContext?.setMockMuseClient();
+            museContext?.getMuseClient();
           }}
         >
           CONNECT MUSE HEADSET
