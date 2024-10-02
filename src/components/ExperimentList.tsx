@@ -35,7 +35,12 @@ const ExperimentList: React.FC = () => {
   };
 
   const closePreview = () => {
-    setIsPreviewing(false);
+    if(isMuseRecording && museBrainwaves){
+      console.log("stopping recording on close...");
+      stopMuseRecording();
+      setIsPreviewing(false);
+      router.push("/playground/record");
+    }
   };
 
   const handleSelectExperiment = (id: number) => setSelectedExperiment(id);
