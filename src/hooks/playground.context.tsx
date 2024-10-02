@@ -39,7 +39,7 @@ export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode
       await museEEGService.startRecording({
         id: experiment?.id ?? 1,
         name:experiment?.experimentName ?? "Open Ended Recording",
-        description: `Recording brain waves for experiment: ${experiment?.experimentName}` ?? "Recording brain waves for open ended recording",
+        description: `Recording brain waves for experiment: ${experiment?.experimentName}` || "Recording brain waves for open ended recording",
       });
     }
   }
@@ -75,7 +75,7 @@ export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode
       experimentName,
       timestamp: new Date().toISOString(),
     };
-    
+
     console.log('Updated recording event:', recordingData);
   }
 
