@@ -109,6 +109,7 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
         <ImagePreviewOverlay
           experimentId={experiment.id}
           images={experiment.images}
+          baseline={experiment.baselineMeasurement}
           duration={experiment.duration}
           interval={experiment.interval}
           onClose={closePreview}

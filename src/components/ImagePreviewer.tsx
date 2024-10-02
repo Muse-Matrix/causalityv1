@@ -7,6 +7,7 @@ interface ImagePreviewOverlayProps {
   images: string[];
   duration: number; // How long each image should be shown
   interval: number; // Time between images
+  baseline: boolean; // Baseline measurement flag
   onClose: () => void; // Function to close the overlay
   experimentId: number; // To track and update experiment as recorded
 }
@@ -15,6 +16,7 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
   images,
   duration,
   interval,
+  baseline,
   onClose,
   experimentId,
 }) => {
@@ -22,6 +24,7 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
   const [message, setMessage] = useState<string>("Starting image preview...");
   const [isPreviewing, setIsPreviewing] = useState<boolean>(true);
   const [countdown, setCountdown] = useState<number>(5); 
+  const [showBaseline, setShowBaseline] = useState<boolean>(false); // For baseline screen
   const router = useRouter();
   const { experiments, updateExperiment } = useExperimentContext(); 
   const {
@@ -48,9 +51,19 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
       console.log("starting image preview...");
       setMessage("");
     } else if (currentIndex < images.length) {
-      timeout = setTimeout(() => {
-        setCurrentIndex(currentIndex + 1);
-      }, (duration) * 1000);
+      if (baseline && interval > 0) {
+        setShowBaseline(true);
+        timeout = setTimeout(() => {
+          setShowBaseline(false); 
+          timeout = setTimeout(() => {
+            setCurrentIndex(currentIndex + 1);
+          }, duration * 1000); 
+        }, interval * 1000); 
+      } else {
+        timeout = setTimeout(() => {
+          setCurrentIndex(currentIndex + 1);
+        }, (duration) * 1000); 
+      }
     } else {
       const experiment = experiments.find((exp) => exp.id === experimentId);
       if (experiment) {
@@ -61,7 +74,7 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
     }
 
     return () => clearTimeout(timeout);
-  }, [currentIndex, images, duration, interval, onClose, experimentId, stopMuseRecording, experiments, updateExperiment]);
+  }, [currentIndex, images, duration, interval, baseline, onClose, experimentId, stopMuseRecording, experiments, updateExperiment]);
 
   return (
     <div
@@ -82,6 +95,10 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
         <p className="text-white text-6xl font-bold">
           {countdown}</p>
           </div>
+      ) : showBaseline ? ( // Show baseline screen if true
+        <div className="flex items-center justify-center w-full h-full border-white border-2">
+          <div className="text-white text-4xl font-bold">+</div> {/* Baseline screen with fixation cross */}
+        </div>
       ) : message ? (
         <p className="text-white text-xl font-bold">{message}</p>
       ) : (
