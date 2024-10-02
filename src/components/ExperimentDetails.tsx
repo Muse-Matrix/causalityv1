@@ -10,6 +10,7 @@ interface ExperimentDetailsProps {
     interval: number;
     baselineMeasurement: boolean;
     isRecorded: boolean;
+    isDownloaded: boolean
   };
   onBack: () => void;
   onDelete: () => void;
@@ -31,6 +32,7 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
   saveAndDownloadRecordedData
 }) => {
   return (
+    <>
     <div className="text-white rounded-lg shadow-lg space-y-10 font-mono">
       <div className="flex items-center space-x-4 mb-8">
         <button
@@ -84,9 +86,9 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
         <div className="flex flex-col sm:flex-row justify-around space-y-4 items-start sm:items-center py-2">
           <button
             className="bg-buttonBlue text-white py-2 rounded px-12"
-            onClick={!experiment.isRecorded ? handleRecordData: saveAndDownloadRecordedData}
+            onClick={!experiment.isDownloaded ? handleRecordData: saveAndDownloadRecordedData}
           >
-            {!experiment.isRecorded ? 'RECORD DATA' : 'ANALYZE RECORD'}
+            {!experiment.isDownloaded ? 'RECORD DATA' : 'ANALYZE RECORD'}
           </button>
           <button
             className="bg-transparent text-white py-2 rounded px-12 border-1"
@@ -102,8 +104,8 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
           </button>
         </div>
       </div>
-
-      {isPreviewing && experiment.images.length && (
+    </div>
+    {isPreviewing && experiment.images.length && (
         <ImagePreviewOverlay
           experimentId={experiment.id}
           images={experiment.images}
@@ -112,7 +114,8 @@ const ExperimentDetails: React.FC<ExperimentDetailsProps> = ({
           onClose={closePreview}
         />
       )}
-    </div>
+    </>
+
   );
 };
 

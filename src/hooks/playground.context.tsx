@@ -139,7 +139,7 @@ export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode
   );
 };
 
-export const useExperiment = () => {
+export const useExperimentPlayground = () => {
   const context = useContext(ExperimentContext);
   if (!context) {
     throw new Error("useExperiment must be used within an ExperimentProvider");

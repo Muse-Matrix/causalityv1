@@ -10,7 +10,8 @@ import {
   MuseEEGService,
 } from "@/services/integrations/muse.service";
 import { useRouter } from "next/navigation";
-import { useExperiment } from "@/hooks/playground.context";
+import { useExperimentPlayground } from "@/hooks/playground.context";
+import { useExperimentContext } from "@/hooks/experiment.context";
 const Recorder = () => {
   const museContext = useContext(MuseContext);
   const {
@@ -21,7 +22,8 @@ const Recorder = () => {
     stopMuseRecording,
     saveAndDownloadRecordedData,
     discardMuseRecording,
-  } = useExperiment();
+  } = useExperimentPlayground();
+  const { currentExperiment, setCurrExperiment } = useExperimentContext();
 
   const router = useRouter();
 
@@ -87,6 +89,7 @@ const Recorder = () => {
             <button
               className="bg-buttonBlue text-white px-6 py-2 font-semibold rounded-md hover:bg-opacity-90"
               onClick={() => {
+                setCurrExperiment(null)
                 startMuseRecording();
               }}
             >
@@ -106,7 +109,8 @@ const Recorder = () => {
             style={{ width: "-webkit-fill-available" }}
           >
             <p className="text-lg text-offWhite font-mono mt-4">
-              Muse Device ID: {museContext.museClient.deviceName} |{" "}
+              {currentExperiment ? currentExperiment.experimentName :`Muse Device ID: ${museContext.museClient.deviceName ? museContext.museClient.deviceName : "" }`}
+              |{" "}
               {!isMuseDataRecorded ? (
                 <span className="text-white inline-flex">
                   Recording in progress{" "}

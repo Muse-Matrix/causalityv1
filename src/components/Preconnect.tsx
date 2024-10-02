@@ -5,8 +5,7 @@ import { useContext } from "react";
 
 export const Preconnect = () => {
   const museContext = useContext(MuseContext);
-  console.log(museContext?.museClient?.connectionStatus,museContext?.museClient?.deviceInfo());
-  
+  console.log(museContext?.museClient?.connectionStatus);
   
   return (
     <div>

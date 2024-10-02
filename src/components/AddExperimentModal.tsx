@@ -34,9 +34,9 @@ export default function ExperimentModal({
       duration,
       interval,
       baselineMeasurement,
-      isRecorded: false
+      isRecorded: false,
+      isDownloaded: false
     };
-    console.log(newExperiment);
 
     addExperiment({id: experiments.length+1, ...newExperiment}); 
     setExperimentName(''); 

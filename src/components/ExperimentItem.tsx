@@ -19,7 +19,7 @@ const ExperimentItem: React.FC<Props> = ({ experiment, onClick , handleRecordDat
     >
       <span className="text-lg text-white">{experiment.experimentName}</span>
       <div className="flex space-x-4">
-        {!experiment.isRecorded ? (
+        {!experiment.isDownloaded ? (
           <Button onClick={handleRecordData}>Record Data</Button>
         ) : (
           <Button onClick={saveAndDownloadRecordedData}>Analyze Data</Button>

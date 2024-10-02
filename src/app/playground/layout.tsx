@@ -27,7 +27,7 @@ const PlayGroundLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <>
+    <div>
       <MuseContextProvider>
         <ExperimentPlaygroundProvider>
           <ExperimentProvider>
@@ -39,7 +39,7 @@ const PlayGroundLayout = ({ children }: { children: React.ReactNode }) => {
           </ExperimentProvider>
         </ExperimentPlaygroundProvider>
       </MuseContextProvider>
-    </>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useExperiment } from "@/hooks/playground.context";
+import { useExperimentPlayground } from "@/hooks/playground.context";
 import React, { useState, useEffect } from "react";
 import { useExperimentContext } from "@/hooks/experiment.context";
 import { useRouter } from "next/navigation";
@@ -21,18 +21,13 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
   const [currentIndex, setCurrentIndex] = useState<number>(-1); // -1 to show starting message first
   const [message, setMessage] = useState<string>("Starting image preview...");
   const [isPreviewing, setIsPreviewing] = useState<boolean>(true);
-  const [countdown, setCountdown] = useState<number>(5); // For countdown
+  const [countdown, setCountdown] = useState<number>(5); 
   const router = useRouter();
   const { experiments, updateExperiment } = useExperimentContext(); 
   const {
-    museBrainwaves,
-    isMuseRecording,
-    isMuseDataRecorded,
     startMuseRecording,
     stopMuseRecording,
-    saveAndDownloadRecordedData,
-    discardMuseRecording,
-  } = useExperiment();
+  } = useExperimentPlayground();
 
   useEffect(() => {
     if (countdown > 0) {
@@ -54,7 +49,6 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
       setMessage("");
     } else if (currentIndex < images.length) {
       timeout = setTimeout(() => {
-
         setCurrentIndex(currentIndex + 1);
       }, (duration) * 1000);
     } else {
@@ -71,19 +65,23 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 transition-opacity duration-300 ${
+      className={`fixed min-w-screen inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 transition-opacity duration-300 p-4 ${
         isPreviewing ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
-      style={{ width: "100vw", height: "100vh" }}
     >
       <div
         onClick={onClose}
-        className="absolute top-4 right-4 text-white text-lg font-bold rounded px-4 py-2 hover:bg-red-600"
+        className="absolute top-4 right-4 text-buttonBlue text-lg font-bold rounded px-4 py-2"
       >
         X
       </div>
       {countdown > 0 ? (
-        <p className="text-white text-6xl font-bold">{countdown}</p> // Countdown display
+        <div className="text-center">
+          <p>Ensure that the user is wearing the EEG device </p>
+          <p>Experiment is starting in</p>
+        <p className="text-white text-6xl font-bold">
+          {countdown}</p>
+          </div>
       ) : message ? (
         <p className="text-white text-xl font-bold">{message}</p>
       ) : (

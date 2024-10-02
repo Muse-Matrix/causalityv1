@@ -4,11 +4,11 @@ import { useExperimentContext } from "@/hooks/experiment.context";
 import ExperimentDetails from "./ExperimentDetails";
 import { MuseContext } from "@/hooks/muse.context";
 import { useRouter } from "next/navigation";
-import { useExperiment } from "@/hooks/playground.context";
+import { useExperimentPlayground } from "@/hooks/playground.context";
 
 const ExperimentList: React.FC = () => {
   const museContext = useContext(MuseContext);
-  const { experiments, removeExperiment } = useExperimentContext();
+  const { experiments, removeExperiment, setCurrExperiment, currentExperiment } = useExperimentContext();
   const {
     museBrainwaves,
     isMuseRecording,
@@ -17,7 +17,7 @@ const ExperimentList: React.FC = () => {
     stopMuseRecording,
     saveAndDownloadRecordedData,
     discardMuseRecording,
-  } = useExperiment();
+  } = useExperimentPlayground();
 
   const router = useRouter();
   const [selectedExperiment, setSelectedExperiment] = useState<number | null>(
@@ -42,7 +42,10 @@ const ExperimentList: React.FC = () => {
     router.push("/playground/record");
   };
 
-  const handleSelectExperiment = (id: number) => setSelectedExperiment(id);
+  const handleSelectExperiment = (id: number) => {
+    setSelectedExperiment(id)
+    setCurrExperiment(id)
+  };
   const handleBack = () => setSelectedExperiment(null);
   const handleDelete = (id: number) => {
     removeExperiment(id);
@@ -78,7 +81,7 @@ const ExperimentList: React.FC = () => {
         </>
       ) : (
         <ExperimentDetails
-          experiment={experiments.find((exp) => exp.id === selectedExperiment)!}
+          experiment={currentExperiment!}
           onBack={handleBack}
           onDelete={() => handleDelete(selectedExperiment)}
           onEdit={() => console.log("Edit experiment")}
@@ -93,6 +96,3 @@ const ExperimentList: React.FC = () => {
 };
 
 export default ExperimentList;
-function removeExperiment(id: number) {
-  console.error("Function not implemented.");
-}

@@ -8,13 +8,16 @@ export interface Experiment {
   interval: number;
   baselineMeasurement: boolean;
   isRecorded: boolean;
+  isDownloaded: boolean;
 }
 
 interface ExperimentContextType {
   experiments: Experiment[];
   addExperiment: (newExperiment: Experiment) => void;
   removeExperiment: (id: number) => void;
-  updateExperiment: (updatedExperiment: Experiment) => void; // Function to update experiment
+  updateExperiment: (updatedExperiment: Experiment) => void;
+  currentExperiment: Experiment | null;
+  setCurrExperiment: (id: number | null) => void;
 }
 
 const ExperimentContext = createContext<ExperimentContextType | undefined>(undefined);
@@ -29,6 +32,7 @@ export const useExperimentContext = () => {
 
 export const ExperimentProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [experiments, setExperiments] = useState<Experiment[]>([]);
+  const [currentExperiment, setCurrentExperiment] = useState<Experiment | null>(null);
 
   const addExperiment = (newExperiment: Experiment) => {
     const updatedExperiments = [...experiments, newExperiment];
@@ -42,6 +46,15 @@ export const ExperimentProvider: React.FC<{ children: ReactNode }> = ({ children
     localStorage.setItem('experiments', JSON.stringify(updatedExperiments));
   };
 
+  const setCurrExperiment = (id: number | null) => {
+    if (id === null) {
+      setCurrentExperiment(null);
+    } else {
+      const currExperiment = experiments.find(experiment => experiment.id === id);
+      setCurrentExperiment(currExperiment ?? null);
+    }
+  };
+
   const updateExperiment = (updatedExperiment: Experiment) => {
     const updatedExperiments = experiments.map(exp =>
       exp.id === updatedExperiment.id ? updatedExperiment : exp
@@ -53,12 +66,12 @@ export const ExperimentProvider: React.FC<{ children: ReactNode }> = ({ children
   useEffect(() => {
     const storedExperiments = localStorage.getItem('experiments');
     if (storedExperiments) {
-      setExperiments(JSON.parse(storedExperiments));
+      setExperiments(JSON.parse(storedExperiments) ?? []);
     }
   }, []);
 
   return (
-    <ExperimentContext.Provider value={{ experiments, addExperiment, removeExperiment, updateExperiment }}>
+    <ExperimentContext.Provider value={{ experiments, addExperiment, removeExperiment, updateExperiment, currentExperiment, setCurrExperiment }}>
       {children}
     </ExperimentContext.Provider>
   );

@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 // import { Web3AuthProvider } from "@/hooks/Web3AuthContext";
 import { headers } from "next/headers";
 import WagmiAuthProvider from "@/hooks/WagmiAuth.context";
+import { hidden } from "colorette";
 
 export const metadata: Metadata = {
   title: 'Causality.network',
@@ -18,7 +19,7 @@ export default function RootLayout({
   const cookies = headers().get('cookie')
   return (
     <html lang="en">
-      <body className="bg-customDark min-w-screen">
+      <body className="bg-customDark" style={{height: "100vh", overflowY: "hidden"}}>
           <WagmiAuthProvider cookies={cookies}>
           <Navbar />
           {children}
