@@ -1,6 +1,7 @@
 import { useExperiment } from "@/hooks/playground.context";
 import React, { useState, useEffect } from "react";
 import { useExperimentContext } from "@/hooks/experiment.context";
+import { useRouter } from "next/navigation";
 
 interface ImagePreviewOverlayProps {
   images: string[];
@@ -21,6 +22,7 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
   const [message, setMessage] = useState<string>("Starting image preview...");
   const [isPreviewing, setIsPreviewing] = useState<boolean>(true);
   const [countdown, setCountdown] = useState<number>(5); // For countdown
+  const router = useRouter();
   const { experiments, updateExperiment } = useExperimentContext(); 
   const {
     museBrainwaves,
@@ -48,14 +50,14 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
     let timeout: ReturnType<typeof setTimeout>;
 
     if (currentIndex === -1) {
-      // Do nothing during countdown
+      console.log("starting image preview...");
       setMessage("");
     } else if (currentIndex < images.length) {
       timeout = setTimeout(() => {
+
         setCurrentIndex(currentIndex + 1);
       }, (duration) * 1000);
     } else {
-
       const experiment = experiments.find((exp) => exp.id === experimentId);
       if (experiment) {
         const updatedExperiment = { ...experiment, isRecorded: false };
