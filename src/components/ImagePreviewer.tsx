@@ -28,7 +28,6 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
   const { experiments, updateExperiment } = useExperimentContext(); 
   const {
     startMuseRecording,
-    stopMuseRecording,
     updateMuseRecordingEvent
   } = useExperimentPlayground();
 
@@ -89,7 +88,7 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
     }
 
     return () => clearTimeout(timeout);
-  }, [currentIndex, images, duration, interval, baseline, onClose, experimentId, stopMuseRecording, experiments, updateExperiment]);
+  }, [currentIndex, images, duration, interval, baseline, onClose, experimentId, experiments, updateExperiment]);
 
   return (
     <div
