@@ -3,6 +3,7 @@ import React, { createContext, useState, useEffect, useContext, ReactNode } from
 import { MuseContext } from "@/hooks/muse.context";
 import { CausalityNetworkParsedEEG, MuseEEGService } from "@/services/integrations/muse.service";
 import { Experiment } from "./experiment.context";
+import { Subscription } from 'rxjs'; 
 
 interface ExperimentContextType {
   museBrainwaves: CausalityNetworkParsedEEG[] | undefined;
@@ -27,19 +28,45 @@ export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode
   useEffect(() => {
     if (museContext?.museClient && museContext?.museService) {
       setMuseEEGService(museContext?.museService!);
-    }else{
-        setIsMuseDataRecorded(false);
-        setIsMuseRecording(false);
+    } else {
+      setIsMuseDataRecorded(false);
+      setIsMuseRecording(false);
     }
   }, [museContext?.museClient]);
+
+  // Monitor Muse client disconnection during recording
+  useEffect(() => {
+    if (!museContext?.museClient || !isMuseRecording) {
+      return;
+    }
+
+    const handleDisconnection = () => {
+      console.log("Muse device disconnected");
+      setIsMuseRecording(false);
+      setIsMuseDataRecorded(false);
+      museContext.disconnectMuseClient(); // Clean up when disconnected
+    };
+
+    // Subscribe to the connectionStatus BehaviorSubject
+    const connectionStatusSubscription: Subscription = museContext.museClient.connectionStatus?.subscribe((state) => {
+      if (state === false) {
+        handleDisconnection();
+      }
+    });
+
+    return () => {
+      // Unsubscribe on component unmount or cleanup
+      connectionStatusSubscription?.unsubscribe();
+    };
+  }, [isMuseRecording, museContext?.museClient]);
 
   async function startMuseRecording(experiment?: Experiment) {
     if (museEEGService) {
       setIsMuseRecording(true);
       await museEEGService.startRecording({
         id: experiment?.id ?? 1,
-        name:experiment?.experimentName ?? "Open Ended Recording",
-        description: `Recording brain waves for experiment: ${experiment?.experimentName}` || "Recording brain waves for open ended recording",
+        name: experiment?.experimentName ?? "Open Ended Recording",
+        description: `Recording brain waves for experiment: ${experiment?.experimentName}` || "Recording brain waves for open-ended recording",
       });
     }
   }
@@ -78,7 +105,6 @@ export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode
 
     console.log('Updated recording event:', recordingData);
   }
-
 
   useEffect(() => {
     if (!isMuseRecording || !museContext?.museService) return;
