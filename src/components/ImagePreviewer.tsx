@@ -21,11 +21,11 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(-1); 
   const [message, setMessage] = useState<string>("Starting image preview...");
-  const [isPreviewing] = useState<boolean>(true);
+  const [isPreviewing, setIsPreviewing] = useState<boolean>(true);
   const [countdown, setCountdown] = useState<number>(5); 
   const [showBaseline, setShowBaseline] = useState<boolean>(false); 
   const { experiments, updateExperiment } = useExperimentContext(); 
-  const { startMuseRecording, updateMuseRecordingEvent } = useExperimentPlayground();
+  const { startMuseRecording, updateMuseRecordingEvent, stopMuseRecording } = useExperimentPlayground();
 
   useEffect(() => {
     if (countdown > 0) {
@@ -94,7 +94,8 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
     experiments,
     updateExperiment,
     onClose,
-    startMuseRecording
+    startMuseRecording,
+    stopMuseRecording
   ]);
 
   return (
