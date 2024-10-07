@@ -3,7 +3,7 @@ import ImagePreviewOverlay from "./ImagePreviewer";
 
 interface ExperimentDetailsProps {
   experiment: {
-    id: number;
+    id: string;
     experimentName: string;
     images: string[];
     duration: number;

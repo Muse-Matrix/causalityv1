@@ -17,7 +17,7 @@ const ExperimentList: React.FC = () => {
   } = useExperimentPlayground();
 
   const router = useRouter();
-  const [selectedExperiment, setSelectedExperiment] = useState<number | null>(
+  const [selectedExperiment, setSelectedExperiment] = useState<string | null>(
     null
   );
   const [isPreviewing, setIsPreviewing] = useState<boolean>(false);
@@ -39,12 +39,12 @@ const ExperimentList: React.FC = () => {
     router.push("/playground/record");
   };
 
-  const handleSelectExperiment = (id: number) => {
+  const handleSelectExperiment = (id: string) => {
     setSelectedExperiment(id)
     setCurrExperiment(id)
   };
   const handleBack = () => setSelectedExperiment(null);
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     removeExperiment(id);
     handleBack();
   };
