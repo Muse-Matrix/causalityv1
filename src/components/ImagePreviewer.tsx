@@ -4,11 +4,11 @@ import { useExperimentContext } from "@/hooks/experiment.context";
 
 interface ImagePreviewOverlayProps {
   images: string[];
-  duration: number; // How long each image should be shown
-  interval: number; // Time between images
-  baseline: boolean; // Baseline measurement flag
-  onClose: () => void; // Function to close the overlay
-  experimentId: number; // To track and update experiment as recorded
+  duration: number; 
+  interval: number; 
+  baseline: boolean; 
+  onClose: () => void; 
+  experimentId: string; 
 }
 
 const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
@@ -91,11 +91,7 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
     baseline,
     experimentId,
     updateMuseRecordingEvent,
-    experiments,
-    updateExperiment,
-    onClose,
-    startMuseRecording,
-    stopMuseRecording
+    onClose
   ]);
 
   return (

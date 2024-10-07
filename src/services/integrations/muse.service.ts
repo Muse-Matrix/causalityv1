@@ -112,9 +112,10 @@ export class MuseEEGService {
           const brainwaveEntry: any = {};
           brainwaveEntry["index"] = sampleIndex;
           brainwaveEntry["unixTimestamp"] = eegReadings.timestamp + sampleIndex * INTER_SAMPLE_INTERVAL;
-          brainwaveEntry["experimentName"] = this.eventSeries[0]?.data?.experimentName ?? "Unknown";
-          brainwaveEntry["experimentImage"] = this.eventSeries[0]?.data?.experimentImage ?? "No Image";
-
+          if(this.eventSeries[0]?.data.experimentName){
+            brainwaveEntry["experimentName"] = this.eventSeries[0]?.data?.experimentName ?? "Unknown";
+            brainwaveEntry["experimentImage"] = this.eventSeries[0]?.data?.experimentImage ?? "No Image";
+          }
 
           let chIndex = 0;
           for (chIndex; chIndex < this.channelNames.length; chIndex++) {

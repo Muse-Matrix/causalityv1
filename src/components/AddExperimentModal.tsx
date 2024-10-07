@@ -1,6 +1,7 @@
 import { useExperimentContext } from "@/hooks/experiment.context";
 import { uploadToCloudinary } from "@/services/storage.service";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export default function ExperimentModal({
   toggleModal,
@@ -33,6 +34,7 @@ export default function ExperimentModal({
     try {
       const url = await Promise.all(images.map((file) => uploadImage(file)));
       const newExperiment = {
+        id: uuidv4(),
         experimentName,
         images: url,
         duration,
@@ -43,7 +45,7 @@ export default function ExperimentModal({
       };
       console.log(newExperiment);
 
-      addExperiment({ id: experiments.length + 1, ...newExperiment });
+      addExperiment(newExperiment);
       setExperimentName('');
       setImages([]);
       setDuration(10);

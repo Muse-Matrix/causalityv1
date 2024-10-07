@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 export interface Experiment {
-  id: number;
+  id: string;
   experimentName: string;
   images: any;
   duration: number;
@@ -14,10 +14,10 @@ export interface Experiment {
 interface ExperimentContextType {
   experiments: Experiment[];
   addExperiment: (newExperiment: Experiment) => void;
-  removeExperiment: (id: number) => void;
+  removeExperiment: (id: string) => void;
   updateExperiment: (updatedExperiment: Experiment) => void;
   currentExperiment: Experiment | null;
-  setCurrExperiment: (id: number | null) => void;
+  setCurrExperiment: (id: string | null) => void;
 }
 
 const ExperimentContext = createContext<ExperimentContextType | undefined>(undefined);
@@ -40,13 +40,13 @@ export const ExperimentProvider: React.FC<{ children: ReactNode }> = ({ children
     localStorage.setItem('experiments', JSON.stringify(updatedExperiments));
   };
 
-  const removeExperiment = (id: number) => {
+  const removeExperiment = (id: string) => {
     const updatedExperiments = experiments.filter(experiment => experiment.id !== id);
     setExperiments(updatedExperiments);
     localStorage.setItem('experiments', JSON.stringify(updatedExperiments));
   };
 
-  const setCurrExperiment = (id: number | null) => {
+  const setCurrExperiment = (id: string | null) => {
     if (id === null) {
       setCurrentExperiment(null);
     } else {

@@ -17,7 +17,7 @@ export const navItems = [
   }
   
   export interface IExperiment {
-    id: number;
+    id: string;
     name: string;
     description: string;
     image?: string;

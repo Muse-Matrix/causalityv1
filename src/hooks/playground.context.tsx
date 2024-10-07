@@ -13,7 +13,7 @@ interface ExperimentContextType {
   stopMuseRecording: () => Promise<void>;
   saveAndDownloadRecordedData: () => Promise<void>;
   discardMuseRecording: () => Promise<void>;
-  updateMuseRecordingEvent:(experimentId: number, imageName: string, experimentName: string) => void;
+  updateMuseRecordingEvent:(experimentId: string, imageName: string, experimentName: string) => void;
 }
 
 const ExperimentContext = createContext<ExperimentContextType | undefined>(undefined);
@@ -64,7 +64,7 @@ export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode
     if (museEEGService) {
       setIsMuseRecording(true);
       await museEEGService.startRecording({
-        id: experiment?.id ?? 1,
+        id: experiment?.id ?? "1",
         name: experiment?.experimentName ?? "Open Ended Recording",
         description: `Recording brain waves for experiment: ${experiment?.experimentName}` || "Recording brain waves for open-ended recording",
       });
@@ -95,7 +95,7 @@ export const ExperimentPlaygroundProvider = ({ children }: { children: ReactNode
     }
   }
 
-  function updateMuseRecordingEvent(experimentId: number, imageName: string, experimentName: string) {
+  function updateMuseRecordingEvent(experimentId: string, imageName: string, experimentName: string) {
     const recordingData = {
       experimentId,
       imageName,
