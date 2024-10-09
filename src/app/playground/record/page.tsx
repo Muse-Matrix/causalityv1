@@ -10,7 +10,7 @@ const RecordArea: React.FC = () => {
   const museContext = useContext(MuseContext);
 
   return (
-    <div className="bg-darkBlue min-h-[80vh] flex flex-col items-center justify-center text-center text-white mx-10 mb-10 p-4">
+    <div className="bg-darkBlue min-h-[75vh] flex flex-col items-center justify-center text-center text-white mx-10 mb-10 p-4">
       {!museContext?.museClient ? (
         <Preconnect />
       ) : (

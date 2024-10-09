@@ -21,15 +21,16 @@ export const MuseContextProvider = ({ children }: { children: React.ReactNode })
     const museClient = new MuseClient();
 
     try {
-      museClient.enablePpg = true;
-    } catch (e) {
-      console.error("ppg is not supported");
+      museClient.enablePpg = true; 
+      await museClient.connect(); 
+      const museEEGService = new MuseEEGService(museClient);
+      setMuseService(museEEGService);
+      setMuseClient(museClient);
+    } catch (error) {
+      console.error("Error connecting to Muse device:", error);
+      setMuseClient(null); 
+      setMuseService(null); 
     }
-
-    await museClient.connect();
-    const museEEGService = new MuseEEGService(museClient);
-    setMuseService(museEEGService);
-    setMuseClient(museClient);
   };
 
   const disconnectMuseClient = async () => {

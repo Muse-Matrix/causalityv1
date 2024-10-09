@@ -4,23 +4,20 @@ import { useExperimentContext } from "@/hooks/experiment.context";
 import ExperimentDetails from "./ExperimentDetails";
 import { MuseContext } from "@/hooks/muse.context";
 import { useRouter } from "next/navigation";
-import { useExperiment } from "@/hooks/playground.context";
+import { useExperimentPlayground } from "@/hooks/playground.context";
 
 const ExperimentList: React.FC = () => {
   const museContext = useContext(MuseContext);
-  const { experiments, removeExperiment } = useExperimentContext();
+  const { experiments, removeExperiment, setCurrExperiment, currentExperiment } = useExperimentContext();
   const {
     museBrainwaves,
     isMuseRecording,
-    isMuseDataRecorded,
-    startMuseRecording,
     stopMuseRecording,
     saveAndDownloadRecordedData,
-    discardMuseRecording,
-  } = useExperiment();
+  } = useExperimentPlayground();
 
   const router = useRouter();
-  const [selectedExperiment, setSelectedExperiment] = useState<number | null>(
+  const [selectedExperiment, setSelectedExperiment] = useState<string | null>(
     null
   );
   const [isPreviewing, setIsPreviewing] = useState<boolean>(false);
@@ -35,12 +32,19 @@ const ExperimentList: React.FC = () => {
   };
 
   const closePreview = () => {
+    if(isMuseRecording && museBrainwaves && museContext?.museService){
+      stopMuseRecording();
+    }
     setIsPreviewing(false);
+    router.push("/playground/record");
   };
 
-  const handleSelectExperiment = (id: number) => setSelectedExperiment(id);
+  const handleSelectExperiment = (id: string) => {
+    setSelectedExperiment(id)
+    setCurrExperiment(id)
+  };
   const handleBack = () => setSelectedExperiment(null);
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     removeExperiment(id);
     handleBack();
   };
@@ -55,7 +59,7 @@ const ExperimentList: React.FC = () => {
             </h1>
           </div>
           <div className="p-8 space-y-7 text-md w-full max-w-2xl md:max-w-3xl relative">
-            <div className="space-y-4">
+            <div className="space-y-4 overflow-y-auto">
               {experiments.length > 0 ? (
                 experiments.map((experiment) => (
                   <ExperimentItem
@@ -74,7 +78,7 @@ const ExperimentList: React.FC = () => {
         </>
       ) : (
         <ExperimentDetails
-          experiment={experiments.find((exp) => exp.id === selectedExperiment)!}
+          experiment={currentExperiment!}
           onBack={handleBack}
           onDelete={() => handleDelete(selectedExperiment)}
           onEdit={() => console.log("Edit experiment")}
@@ -89,6 +93,3 @@ const ExperimentList: React.FC = () => {
 };
 
 export default ExperimentList;
-function removeExperiment(id: number) {
-  console.error("Function not implemented.");
-}
