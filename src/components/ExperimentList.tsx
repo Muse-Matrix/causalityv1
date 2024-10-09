@@ -50,7 +50,7 @@ const ExperimentList: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6 font-mono text-white overflow-y-scroll">
+    <div className="w-full max-w-4xl mx-auto space-y-6 font-mono text-white">
       {selectedExperiment === null ? (
         <>
           <div className="flex items-center space-x-4 mb-8">
@@ -58,8 +58,8 @@ const ExperimentList: React.FC = () => {
               Saved Experiments
             </h1>
           </div>
-          <div className="p-8 space-y-7 text-md w-full max-w-2xl md:max-w-3xl relative overflow-y-scroll">
-            <div className="space-y-4">
+          <div className="p-8 space-y-7 text-md w-full max-w-2xl md:max-w-3xl relative">
+            <div className="space-y-4 overflow-y-auto">
               {experiments.length > 0 ? (
                 experiments.map((experiment) => (
                   <ExperimentItem

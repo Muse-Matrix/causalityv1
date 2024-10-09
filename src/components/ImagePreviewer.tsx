@@ -90,7 +90,6 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
     interval,
     baseline,
     experimentId,
-    updateMuseRecordingEvent,
     onClose
   ]);
 

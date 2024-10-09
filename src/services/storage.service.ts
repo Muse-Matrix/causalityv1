@@ -25,10 +25,7 @@ export function convertToCSV(arr: any[]) {
 }
 
 export async function writeDataToStore(dataName: string, data: any, fileTimestamp: string, storeType = "download") {
-  // TODO: fix validation
   console.log("fileTimestamp: ", fileTimestamp);
-
-  // const providerName = dataName === "event" ? "fusion" : "neurosity";
 
   if (storeType === "download") {
     const fileName = `${dataName}_${fileTimestamp}.csv`;
@@ -41,22 +38,6 @@ export async function writeDataToStore(dataName: string, data: any, fileTimestam
     hiddenElement.click();
   } else if (storeType === "remoteStorage") {
     // call the upload api
-    // (async () => {
-    //   const res = await axios.post(`${process.env["NEXT_PUBLIC_NEUROFUSION_BACKEND_URL"]}/api/storage/upload`, {
-    //     provider: providerName,
-    //     dataName: dataName, // eslint-disable-line object-shorthand
-    //     fileTimestamp: fileTimestamp, // eslint-disable-line object-shorthand
-    //     content: data,
-    //   });
-
-    //   if (res.status === 200) {
-    //     // NotificationManager.success(`uploading ${dataName} successful`);
-    //     console.log(`Writing data for ${dataName} complete`);
-    //   } else {
-    //     // NotificationManager.error(`uploading ${dataName} failed`);
-    //     console.log(`Writing data for ${dataName} failed`);
-    //   }
-    // })();
   }
 }
 
@@ -137,9 +118,6 @@ export async function writeToLocalStorage(datasetExport: DatasetExport, unixTime
   return true;
 }
 
-/**
- * Decentralized storage methods
- */
 export async function uploadToIpfs(file: File) {
   try {
     const helia = await createHelia();
@@ -188,8 +166,8 @@ export async function downloadFromIpfs(cid: string) {
 export async function uploadToCloudinary(file: File): Promise<string | null> {
   const data = new FormData();
   data.append("file", file);
-  data.append("upload_preset", "c023wt96"); // Your upload preset
-  data.append("cloud_name", "ddbsgfcsx"); // Your cloud name
+  data.append("upload_preset", "c023wt96");
+  data.append("cloud_name", "ddbsgfcsx"); 
   console.log("uploading file");
   
   try {
@@ -201,7 +179,7 @@ export async function uploadToCloudinary(file: File): Promise<string | null> {
     const result = await response.json();
     console.log(result);
     
-    return result.secure_url; // Return the URL for use in <img src="">
+    return result.secure_url;
   } catch (error) {
     console.error("Error during upload:", error);
     return null;
