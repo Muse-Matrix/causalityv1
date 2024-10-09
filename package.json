@@ -28,14 +28,14 @@
     "jszip": "^3.10.1",
     "lucide-react": "^0.441.0",
     "muse-js": "^3.3.0",
-    "next": "14.2.11",
+    "next": "^14.2.11",
     "next-auth": "^4.24.7",
     "pino-pretty": "^11.2.2",
     "react": "^18",
     "react-dom": "^18",
     "uuid": "^10.0.0",
     "viem": "^2.21.15",
-    "wagmi": "^2.12.16",
+    "wagmi": "^2.12.17",
     "web3": "^4.13.0"
   },
   "devDependencies": {
