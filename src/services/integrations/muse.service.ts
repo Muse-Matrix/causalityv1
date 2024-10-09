@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 // import { createHash } from "crypto";
 import { getFileHash, signData } from "../signer.service";
 import { DatasetExport, EventData, IExperiment } from "@/utils/constant";
-import { downloadDataAsZip, getCSVFile, writeToLocalStorage } from "../storage.service";
+import { getCSVFile } from "../storage.service";
 
 export const MUSE_SAMPLING_RATE = 256;
 export const MUSE_CHANNELS = ["TP9", "AF7", "AF8", "TP10"];
@@ -66,22 +66,6 @@ export interface CausalityNetworkParsedEEG {
   [channelName: string]: number;
 }
 
-// interface MusePPGReadings {
-//   index: number;
-//   ppgChannel: number;
-//   samples: number[];
-//   timestamp: number;
-// }
-
-interface accelerometerEntry {
-  x: number;
-  y: number;
-  z: number;
-}
-// interface MuseAccelerometerData {
-//   samples: accelerometerEntry[];
-// }
-
 export class MuseEEGService {
   museClient: MuseClient;
   dataStorageMode: "local" | "remote" = "local";
@@ -128,6 +112,10 @@ export class MuseEEGService {
           const brainwaveEntry: any = {};
           brainwaveEntry["index"] = sampleIndex;
           brainwaveEntry["unixTimestamp"] = eegReadings.timestamp + sampleIndex * INTER_SAMPLE_INTERVAL;
+          if(this.eventSeries[0]?.data.experimentName){
+            brainwaveEntry["experimentName"] = this.eventSeries[0]?.data?.experimentName ?? "Unknown";
+            brainwaveEntry["experimentImage"] = this.eventSeries[0]?.data?.experimentImage ?? "No Image";
+          }
 
           let chIndex = 0;
           for (chIndex; chIndex < this.channelNames.length; chIndex++) {
@@ -142,13 +130,6 @@ export class MuseEEGService {
       }
     });
 
-    // this.museClient.ppgReadings.subscribe((ppgReadings: MusePPGReadings) => {
-    //   console.log(ppgReadings);
-    // });
-
-    // this.museClient.accelerometerData.subscribe((accelerometerData) => {
-    //   console.log(accelerometerData);
-    // });
   }
 
   // Notify all subscribers with the new data

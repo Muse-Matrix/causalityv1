@@ -5,8 +5,7 @@ import { useContext } from "react";
 
 export const Preconnect = () => {
   const museContext = useContext(MuseContext);
-  console.log(museContext?.museClient?.connectionStatus,museContext?.museClient?.deviceInfo());
-  
+  console.log(museContext?.museClient?.connectionStatus);
   
   return (
     <div>
@@ -18,7 +17,7 @@ export const Preconnect = () => {
         <button
           className="bg-white text-lightBlue px-6 py-3 font-bold rounded-md hover:bg-opacity-90"
           onClick={async () => {
-            museContext?.setMockMuseClient();
+            museContext?.getMuseClient();
           }}
         >
           CONNECT MUSE HEADSET
