@@ -166,12 +166,12 @@ export async function downloadFromIpfs(cid: string) {
 export async function uploadToCloudinary(file: File): Promise<string | null> {
   const data = new FormData();
   data.append("file", file);
-  data.append("upload_preset", "c023wt96");
-  data.append("cloud_name", "ddbsgfcsx"); 
+  data.append("upload_preset", "experiment_causality");
+  data.append("cloud_name", "dqu56ahai"); 
   console.log("uploading file");
   
   try {
-    const response = await fetch("https://api.cloudinary.com/v1_1/ddbsgfcsx/image/upload", {
+    const response = await fetch("https://api.cloudinary.com/v1_1/dqu56ahai/image/upload", {
       method: "POST",
       body: data,
     });
