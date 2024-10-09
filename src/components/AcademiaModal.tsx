@@ -34,11 +34,23 @@ const AcademiaModal: React.FC<AcademiaModalProps> = ({ onClose }) => {
       setIsSubmitting(true);
       const { contentHash, name, startTimestamp, endTimestamp, additionalMeta } = form;
 
+      // Add '0x' prefix if it's missing from the contentHash
+      const formattedContentHash = contentHash.startsWith('0x') ? contentHash : `0x${contentHash}`;
+
+      // Validate the contentHash input as a valid bytes32 value
+      if (!/^0x([A-Fa-f0-9]{64})$/.test(formattedContentHash)) {
+        throw new Error('Invalid content hash. Please provide a valid bytes32 value.');
+      }
+
       // Convert startTimestamp and endTimestamp to numbers
       const startTs = parseInt(startTimestamp, 10);
       const endTs = parseInt(endTimestamp, 10);
 
-      const additionalMetaObj = JSON.parse(additionalMeta);
+      if (isNaN(startTs) || isNaN(endTs)) {
+        throw new Error('Invalid start or end timestamp. Please provide valid numbers.');
+      }
+
+      const additionalMetaObj = additionalMeta ? JSON.parse(additionalMeta) : {};
 
       // Request network switch to Base Mainnet if needed
       if (typeof (window as any).ethereum !== 'undefined') {
@@ -76,7 +88,7 @@ const AcademiaModal: React.FC<AcademiaModalProps> = ({ onClose }) => {
       }
 
       console.log('Submitting transaction for attestation...');
-      const attestationUID = await signData(name, startTs, endTs, contentHash, additionalMetaObj);
+      const attestationUID = await signData(name, startTs, endTs, formattedContentHash, additionalMetaObj);
       console.log('Attestation successful. UID:', attestationUID);
       onClose();
     } catch (err) {
@@ -95,7 +107,7 @@ const AcademiaModal: React.FC<AcademiaModalProps> = ({ onClose }) => {
           name="contentHash"
           value={form.contentHash}
           onChange={handleChange}
-          placeholder="Content Hash"
+          placeholder="Content Hash (bytes32)"
         />
         <input
           className="w-full p-2 mb-4 border border-gray-300 rounded"
@@ -123,7 +135,7 @@ const AcademiaModal: React.FC<AcademiaModalProps> = ({ onClose }) => {
           name="additionalMeta"
           value={form.additionalMeta}
           onChange={handleChange}
-          placeholder="Additional Meta"
+          placeholder="Additional Meta (JSON format)"
         />
         <div className="flex justify-end space-x-4">
           <button
