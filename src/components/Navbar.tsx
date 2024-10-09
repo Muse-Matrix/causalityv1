@@ -6,15 +6,17 @@ import { navItems } from "@/utils/constant";
 import { useRouter, usePathname } from "next/navigation";
 import { useAccount } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
+import AcademiaModal from './AcademiaModal';
 
 const Navbar: React.FC = () => {
   const { isConnected } = useAccount();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAcademiaModalOpen, setAcademiaModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<string | null>(null);
   const { activeItem } = useActiveLink();
   const router = useRouter();
   const pathname = usePathname();
-  const { open } = useAppKit()
-  
+  const { open } = useAppKit();
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -37,6 +39,15 @@ const Navbar: React.FC = () => {
       router.push("/playground/record");
     }
   }, [isConnected, pathname, router]);
+
+  // Set active tab based on modal open state
+  useEffect(() => {
+    if (isAcademiaModalOpen) {
+      setActiveTab('Academia');
+    } else if (activeItem) {
+      setActiveTab(activeItem);
+    }
+  }, [isAcademiaModalOpen, activeItem]);
 
   return (
     <header className="w-full">
@@ -93,17 +104,35 @@ const Navbar: React.FC = () => {
                 key={index}
                 href={item.href}
                 className={`hover:text-primary py-2 transition-colors ${
-                  activeItem === item.name ? "text-primary" : ""
+                  activeTab === item.name ? "text-primary" : ""
                 }`}
-                onClick={closeMenu}
+                onClick={() => {
+                  closeMenu();
+                  setActiveTab(item.name);
+                }}
               >
                 {item.name}
               </Link>
             ))}     
-              <w3m-button />
+            <div 
+              className={`nav-item cursor-pointer hover:text-primary py-2 transition-colors ${
+                activeTab === 'Academia' ? "text-primary" : ""
+              }`}
+              onClick={() => {
+                setAcademiaModalOpen(true);
+                setActiveTab('Academia');
+              }}
+            >
+              Academia
+            </div>
+            <w3m-button />
           </div>
         </div>
       </nav>
+      {/* Render Academia Modal */}
+      {isAcademiaModalOpen && (
+        <AcademiaModal onClose={() => setAcademiaModalOpen(false)} />
+      )}
     </header>
   );
 };
