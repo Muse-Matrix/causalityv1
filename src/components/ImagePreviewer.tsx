@@ -85,12 +85,6 @@ const ImagePreviewOverlay: React.FC<ImagePreviewOverlayProps> = ({
     return () => clearTimeout(timeout);
   }, [
     currentIndex,
-    images,
-    duration,
-    interval,
-    baseline,
-    experimentId,
-    onClose
   ]);
 
   return (
