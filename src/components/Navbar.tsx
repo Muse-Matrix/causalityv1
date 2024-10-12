@@ -123,7 +123,7 @@ const Navbar: React.FC = () => {
                 setActiveTab('Academia');
               }}
             >
-              Academia
+              ACADEMIA
             </div>
             <w3m-button />
           </div>
